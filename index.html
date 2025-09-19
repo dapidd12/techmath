@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechMath - Pusat Rumus Matematika (Edisi Final)</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --accent-primary: #e94560;
+            --accent-secondary: #533483;
+            --text-primary: #f0f0f0;
+            --text-secondary: #c2c2c2;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--accent-secondary));
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "➕➗✖️➖";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 2rem;
+            opacity: 0.05;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        #searchInput:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            overflow-y: auto;
+            transition: left 0.3s ease-in-out;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar h2::before {
+            content: "📚";
+            margin-right: 10px;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--accent-secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .level-filters, .topic-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            background-color: var(--bg-card);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--accent-secondary);
+            transform: translateX(5px);
+        }
+
+        .filter-btn.active {
+            background-color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .filter-btn::before { margin-right: 8px; }
+        .sd::before { content: "🎒"; }
+        .smp::before { content: "📘"; }
+        .sma::before { content: "📜"; }
+        .pt::before { content: "🎓"; }
+        .advanced::before { content: "🧠"; }
+
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .formula-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid var(--accent-secondary);
+            height: 100%;
+        }
+
+        .formula-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+            border-left-color: var(--accent-primary);
+        }
+
+        .formula-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .formula-latex {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .formula-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .formula-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .formula-level, .formula-topic {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: var(--accent-secondary);
+            color: white;
+        }
+        
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .formula-topic {
+            background-color: var(--accent-primary);
+        }
+
+        .formula-viewer {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #backButton {
+            background-color: var(--accent-primary);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        #backButton:hover { background-color: #d6344d; }
+        #backButton::before { content: "⬅"; margin-right: 8px; }
+
+        .viewer-title { font-size: 1.8rem; color: white; }
+        .viewer-latex {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            text-align: center;
+            overflow-x: auto;
+        }
+        .viewer-description { margin-bottom: 1.5rem; line-height: 1.7; }
+
+        .calculator {
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 3px solid var(--success);
+        }
+
+        .calculator h3 { margin-bottom: 1rem; color: var(--accent-primary); }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-field { display: flex; flex-direction: column; }
+        .input-field label { margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .input-field input {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        #calculateButton {
+            background-color: var(--success);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: #1a1a2e;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        #calculateButton:hover { background-color: #3aa5c7; transform: scale(1.05); }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: rgba(76, 201, 240, 0.2);
+            border-radius: 8px;
+            display: none;
+            border-left: 4px solid var(--success);
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+
+        .examples { margin-top: 2rem; }
+        .examples h3 { margin-bottom: 1rem; color: var(--accent-primary); }
+        .example-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .example-item div {
+             overflow-x: auto;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 12px;
+            z-index: 1001;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                height: 100%;
+                z-index: 1000;
+                top: 0;
+            }
+            .sidebar.active { left: 0; }
+            .hamburger { display: block; }
+            .overlay.active { display: block; }
+            .content { padding: 2rem 1.5rem; }
+            .stats-bar { flex-direction: column; gap: 0.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            header { padding: 1.5rem 1rem; }
+            .content { padding: 1.5rem 1rem; }
+            .formula-grid { grid-template-columns: 1fr; }
+            .viewer-title { font-size: 1.5rem; }
+            .formula-viewer { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <button class="hamburger" id="hamburgerButton">☰</button>
+    <div class="overlay" id="overlay"></div>
+
+    <header>
+        <h1>TechMath 🚀</h1>
+        <p class="tagline">Pusat Rumus Matematika (Edisi Final)</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Cari: Pythagoras, Kalkulus, E=mc² ...">
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <h2>Kategori</h2>
+            
+            <div class="filter-group">
+                <h3>Tingkat Pendidikan</h3>
+                <div class="level-filters">
+                    <button class="filter-btn sd active" data-level="all">Semua Tingkat</button>
+                    <button class="filter-btn sd" data-level="SD">SD</button>
+                    <button class="filter-btn smp" data-level="SMP">SMP</button>
+                    <button class="filter-btn sma" data-level="SMA">SMA</button>
+                    <button class="filter-btn pt" data-level="Perguruan Tinggi">Perguruan Tinggi</button>
+                    <button class="filter-btn advanced" data-level="Advanced">Advanced</button>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Topik</h3>
+                <div class="topic-filters">
+                    <button class="filter-btn active" data-topic="all">Semua Topik</button>
+                    <button class="filter-btn" data-topic="Aljabar">Aljabar</button>
+                    <button class="filter-btn" data-topic="Geometri">Geometri</button>
+                    <button class="filter-btn" data-topic="Trigonometri">Trigonometri</button>
+                    <button class="filter-btn" data-topic="Kalkulus">Kalkulus</button>
+                    <button class="filter-btn" data-topic="Statistika">Statistika</button>
+                    <button class="filter-btn" data-topic="Fisika">Fisika</button>
+                    <button class="filter-btn" data-topic="Lainnya">Lainnya</button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="stats-bar">
+                <span id="totalFormulas">Total Rumus: 207</span>
+                <span id="filterStatus">Menampilkan semua rumus</span>
+            </div>
+            <div class="formula-grid" id="formulaGrid"></div>
+            <div class="no-results" id="noResults">
+                <h2>😢 Rumus tidak ditemukan</h2>
+                <p>Coba kata kunci lain atau ubah filter pencarian.</p>
+            </div>
+            <div class="formula-viewer" id="formulaViewer">
+                <div class="viewer-header">
+                    <h2 class="viewer-title" id="viewerTitle"></h2>
+                    <button id="backButton">Kembali</button>
+                </div>
+                <div class="viewer-latex" id="viewerLatex"></div>
+                <p class="viewer-description" id="viewerDescription"></p>
+                <div id="calculatorWrapper">
+                    <div class="calculator">
+                        <h3>Kalkulator Interaktif</h3>
+                        <div class="input-group" id="inputGroup"></div>
+                        <button id="calculateButton">Hitung</button>
+                        <div class="result" id="result"></div>
+                    </div>
+                </div>
+                <div class="examples" id="examples"></div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2025 TechMath - Pusat Rumus Matematika | Dibuat oleh DAPID</p>
+    </footer>
+
+    <script>
+        // --- DATABASE RUMUS EDISI FINAL ---
+        const formulasDatabase = [
+            // --- ALGEBRA ---
+            {
+                id: 1, title: "Rumus Kuadrat (ABC)", latex: "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}",
+                description: "Mencari akar-akar persamaan kuadrat ax² + bx + c = 0.", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Koefisien x²", defaultValue: 1 }, { symbol: "b", name: "Koefisien x", defaultValue: -3 }, { symbol: "c", name: "Konstanta", defaultValue: 2 } ],
+                calculate: function(v) {
+                    const d = v.b**2 - 4*v.a*v.c;
+                    if (d > 0) return `Akar real: x₁ = ${((-v.b + Math.sqrt(d))/(2*v.a)).toFixed(2)}, x₂ = ${((-v.b - Math.sqrt(d))/(2*v.a)).toFixed(2)}`;
+                    else if (d === 0) return `Akar kembar: x = ${(-v.b / (2*v.a)).toFixed(2)}`;
+                    else return `Akar imajiner: x = ${(-v.b / (2*v.a)).toFixed(2)} ± ${((Math.sqrt(-d))/(2*v.a)).toFixed(2)}i`;
+                },
+                examples: [ { problem: "Selesaikan: x² - 3x + 2 = 0", solution: "a=1, b=-3, c=2. \\[x = \\frac{3 \\pm \\sqrt{(-3)^2 - 4(1)(2)}}{2(1)} = \\frac{3 \\pm 1}{2}\\] Akar-akarnya x₁=2, x₂=1." } ]
+            },
+            {
+                id: 12, title: "Barisan Aritmetika (Suku ke-n)", latex: "U_n = a + (n-1)d",
+                description: "Mencari suku ke-n (Uₙ) dalam barisan aritmetika, di mana 'a' suku pertama dan 'd' beda.", level: "SMP", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Suku pertama (a)", defaultValue: 3 }, { symbol: "d", name: "Beda (d)", defaultValue: 4 }, { symbol: "n", name: "Suku ke- (n)", defaultValue: 10 } ],
+                calculate: function(v) { return `Suku ke-${v.n} adalah ${v.a + (v.n - 1) * v.d}`; },
+                examples: [ { problem: "Suku pertama adalah 3 dan bedanya 4. Tentukan suku ke-10!", solution: "\\[U_{10} = 3 + (10-1) \\times 4 = 39\\]" } ]
+            },
+            {
+                id: 15, title: "Deret Aritmetika (Jumlah n suku)", latex: "S_n = \\frac{n}{2}(2a + (n-1)d)",
+                description: "Menghitung jumlah n suku pertama (Sₙ) dari sebuah deret aritmetika.", level: "SMP", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Suku pertama (a)", defaultValue: 2 }, { symbol: "d", name: "Beda (d)", defaultValue: 3 }, { symbol: "n", name: "Jumlah suku (n)", defaultValue: 5 } ],
+                calculate: function(v) { return `Jumlah ${v.n} suku pertama adalah ${v.n/2 * (2*v.a + (v.n-1)*v.d)}`; },
+                examples: [ { problem: "Hitung jumlah 5 suku pertama dari deret 2, 5, 8, ...", solution: "\\[S_5 = \\frac{5}{2}(2(2) + (5-1)3) = 40\\]" } ]
+            },
+            {
+                id: 16, title: "Barisan Geometri (Suku ke-n)", latex: "U_n = ar^{n-1}",
+                description: "Mencari suku ke-n (Uₙ) dalam barisan geometri, di mana 'a' suku pertama dan 'r' rasio.", level: "SMP", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Suku pertama (a)", defaultValue: 3 }, { symbol: "r", name: "Rasio (r)", defaultValue: 2 }, { symbol: "n", name: "Suku ke- (n)", defaultValue: 5 } ],
+                calculate: function(v) { return `Suku ke-${v.n} adalah ${v.a * (v.r**(v.n-1))}`; },
+                examples: [ { problem: "Barisan geometri dimulai dengan 3 dan rasio 2. Cari suku ke-5!", solution: "\\[U_5 = 3 \\times 2^{5-1} = 48\\]" } ]
+            },
+            {
+                id: 17, title: "Deret Geometri (Jumlah n suku)", latex: "S_n = \\frac{a(r^n - 1)}{r-1}",
+                description: "Menghitung jumlah n suku pertama (Sₙ) dari deret geometri. Berlaku jika r ≠ 1.", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Suku pertama (a)", defaultValue: 3 }, { symbol: "r", name: "Rasio (r)", defaultValue: 2 }, { symbol: "n", name: "Jumlah suku (n)", defaultValue: 5 } ],
+                calculate: function(v) { if(v.r===1) return "Rasio tidak boleh 1"; return `Jumlah ${v.n} suku pertama adalah ${v.a * (v.r**v.n - 1) / (v.r - 1)}`; },
+                examples: [ { problem: "Hitung jumlah 5 suku pertama dari deret 3, 6, 12, ...", solution: "\\[S_5 = \\frac{3(2^5 - 1)}{2-1} = 93\\]" } ]
+            },
+            {
+                id: 18, title: "Permutasi", latex: "P(n, k) = \\frac{n!}{(n-k)!}",
+                description: "Menghitung cara menyusun k objek dari n objek dengan memperhatikan urutan.", level: "SMA", topics: ["Aljabar", "Statistika"],
+                variables: [ { symbol: "n", name: "Total objek (n)", defaultValue: 5 }, { symbol: "k", name: "Objek dipilih (k)", defaultValue: 3 } ],
+                calculate: function(v) { let res = 1; for(let i=0; i<v.k; i++) res *= (v.n-i); return `Jumlah permutasi: ${res}`; },
+                examples: [ { problem: "Ada 5 orang, berapa cara memilih ketua, wakil, bendahara?", solution: "\\[P(5,3) = \\frac{5!}{(5-3)!} = 60 \\text{ cara}\\]" } ]
+            },
+            {
+                id: 19, title: "Kombinasi", latex: "C(n, k) = \\frac{n!}{k!(n-k)!}",
+                description: "Menghitung cara memilih k objek dari n objek tanpa memperhatikan urutan.", level: "SMA", topics: ["Aljabar", "Statistika"],
+                variables: [ { symbol: "n", name: "Total objek (n)", defaultValue: 5 }, { symbol: "k", name: "Objek dipilih (k)", defaultValue: 3 } ],
+                calculate: function(v) { let res = 1; for(let i=0; i<v.k; i++) res *= (v.n-i); for(let i=1; i<=v.k; i++) res /= i; return `Jumlah kombinasi: ${res}`; },
+                examples: [ { problem: "Dari 5 orang, berapa cara memilih 3 orang untuk tim?", solution: "\\[C(5,3) = \\frac{5!}{3!(5-3)!} = 10 \\text{ cara}\\]" } ]
+            },
+            {
+                id: 28, title: "Determinan Matriks 2x2", latex: "\\det(A) = ad - bc",
+                description: "Menghitung nilai skalar dari matriks 2x2. A = [[a, b], [c, d]].", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "a", defaultValue: 4 }, { symbol: "b", name: "b", defaultValue: 7 }, { symbol: "c", name: "c", defaultValue: 2 }, { symbol: "d", name: "d", defaultValue: 6 } ],
+                calculate: function(v) { return `Determinannya adalah ${v.a*v.d - v.b*v.c}`; },
+                examples: [ { problem: "Hitung determinan matriks [[4, 7], [2, 6]].", solution: "\\[\\det(A) = (4)(6) - (7)(2) = 24 - 14 = 10\\]" } ]
+            },
+            // --- GEOMETRY ---
+            {
+                id: 2, title: "Teorema Pythagoras", latex: "c^2 = a^2 + b^2",
+                description: "Kuadrat sisi miring (c) segitiga siku-siku sama dengan jumlah kuadrat dua sisi lainnya (a, b).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "a", name: "Sisi tegak (a)", defaultValue: 3 }, { symbol: "b", name: "Sisi alas (b)", defaultValue: 4 } ],
+                calculate: function(v) { return `Sisi miring (c) = ${Math.sqrt(v.a**2 + v.b**2).toFixed(2)}`; },
+                examples: [ { problem: "Sisi a=3 dan b=4. Berapa sisi miring c?", solution: "\\[c = \\sqrt{3^2 + 4^2} = 5\\]" } ]
+            },
+            {
+                id: 3, title: "Luas Lingkaran", latex: "L = \\pi r^2",
+                description: "Menghitung luas area sebuah lingkaran dengan jari-jari r.", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 7 } ],
+                calculate: function(v) { return `Luas = ${(Math.PI * v.r**2).toFixed(2)}`; },
+                examples: [ { problem: "Hitung luas lingkaran dengan jari-jari 7 cm.", solution: "\\[L = \\pi \\times 7^2 \\approx 153.94 \\text{ cm}^2\\]" } ]
+            },
+            {
+                id: 5, title: "Volume Bola", latex: "V = \\frac{4}{3} \\pi r^3",
+                description: "Menghitung volume (isi) dari sebuah bola dengan jari-jari r.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 3 } ],
+                calculate: function(v) { return `Volume = ${(4/3 * Math.PI * v.r**3).toFixed(2)}`; },
+                examples: [ { problem: "Berapa volume bola dengan jari-jari 3 cm?", solution: "\\[V = \\frac{4}{3} \\pi (3)^3 \\approx 113.1 \\text{ cm}^3\\]" } ]
+            },
+            {
+                id: 10, title: "Volume Silinder (Tabung)", latex: "V = \\pi r^2 h",
+                description: "Menghitung volume silinder dengan jari-jari alas r dan tinggi h.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 5 }, { symbol: "h", name: "Tinggi (h)", defaultValue: 10 } ],
+                calculate: function(v) { return `Volume = ${(Math.PI * v.r**2 * v.h).toFixed(2)}`; },
+                examples: [ { problem: "Tabung berjari-jari 5 cm dan tinggi 10 cm. Volumenya?", solution: "\\[V = \\pi (5^2)(10) \\approx 785.4 \\text{ cm}^3\\]" } ]
+            },
+            {
+                id: 20, title: "Volume Kerucut", latex: "V = \\frac{1}{3} \\pi r^2 h",
+                description: "Menghitung volume kerucut dengan jari-jari alas r dan tinggi h.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 3 }, { symbol: "h", name: "Tinggi (h)", defaultValue: 5 } ],
+                calculate: function(v) { return `Volume = ${(1/3 * Math.PI * v.r**2 * v.h).toFixed(2)}`; },
+                examples: [ { problem: "Kerucut berjari-jari 3 cm dan tinggi 5 cm. Volumenya?", solution: "\\[V = \\frac{1}{3} \\pi (3^2)(5) \\approx 47.12 \\text{ cm}^3\\]" } ]
+            },
+            {
+                id: 21, title: "Jarak Antara Dua Titik", latex: "d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}",
+                description: "Menghitung jarak (d) antara dua titik (x₁, y₁) dan (x₂, y₂) pada bidang Kartesius.", level: "SMA", topics: ["Geometri", "Aljabar"],
+                variables: [ { symbol: "x1", name: "x₁", defaultValue: 1 }, { symbol: "y1", name: "y₁", defaultValue: 2 }, { symbol: "x2", name: "x₂", defaultValue: 4 }, { symbol: "y2", name: "y₂", defaultValue: 6 } ],
+                calculate: function(v) { return `Jarak = ${Math.sqrt((v.x2-v.x1)**2 + (v.y2-v.y1)**2).toFixed(2)}`; },
+                examples: [ { problem: "Tentukan jarak antara titik (1,2) dan (4,6).", solution: "\\[d = \\sqrt{(4-1)^2 + (6-2)^2} = 5\\]" } ]
+            },
+            // --- TRIGONOMETRY ---
+            {
+                id: 6, title: "Identitas Trigonometri Pythagoras", latex: "\\sin^2{\\theta} + \\cos^2{\\theta} = 1",
+                description: "Identitas fundamental trigonometri yang berlaku untuk semua sudut θ.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Jika sin(θ) = 0.6, cari nilai cos(θ)!", solution: "\\[(0.6)^2 + \\cos^2{\\theta} = 1 \\implies \\cos{\\theta} = \\pm 0.8\\]" } ]
+            },
+            {
+                id: 7, title: "Hukum Sinus", latex: "\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C}",
+                description: "Perbandingan panjang sisi segitiga dengan sinus sudut yang berhadapan adalah konstan.", level: "SMA", topics: ["Trigonometri", "Geometri"],
+                variables: [ { symbol: "a", name: "Sisi a", defaultValue: 10 }, { symbol: "A", name: "Sudut A (°)", defaultValue: 30 }, { symbol: "B", name: "Sudut B (°)", defaultValue: 45 } ],
+                calculate: function(v) { const radA = v.A * Math.PI/180; const radB = v.B * Math.PI/180; return `Sisi b = ${(v.a * Math.sin(radB) / Math.sin(radA)).toFixed(2)}`; },
+                examples: [ { problem: "ΔABC, sisi a=10, ∠A=30°, ∠B=45°. Cari sisi b!", solution: "\\[b = \\frac{10 \\times \\sin 45°}{\\sin 30°} = 14.14\\]" } ]
+            },
+            {
+                id: 22, title: "Hukum Kosinus", latex: "c^2 = a^2 + b^2 - 2ab \\cos C",
+                description: "Menghubungkan panjang sisi-sisi segitiga dengan kosinus salah satu sudutnya.", level: "SMA", topics: ["Trigonometri", "Geometri"],
+                variables: [ { symbol: "a", name: "Sisi a", defaultValue: 5 }, { symbol: "b", name: "Sisi b", defaultValue: 7 }, { symbol: "C", name: "Sudut C (°)", defaultValue: 60 } ],
+                calculate: function(v) { const radC = v.C * Math.PI/180; return `Sisi c = ${Math.sqrt(v.a**2 + v.b**2 - 2*v.a*v.b*Math.cos(radC)).toFixed(2)}`; },
+                examples: [ { problem: "ΔABC, a=5, b=7, ∠C=60°. Cari sisi c!", solution: "\\[c^2 = 5^2+7^2 - 2(5)(7)\\cos 60° = 39 \\implies c \\approx 6.24\\]" } ]
+            },
+            // --- CALCULUS ---
+            {
+                id: 4, title: "Turunan Fungsi Pangkat", latex: "\\frac{d}{dx} x^n = nx^{n-1}",
+                description: "Aturan dasar kalkulus diferensial untuk menurunkan fungsi berbentuk pangkat.", level: "SMA", topics: ["Kalkulus"],
+                variables: [ { symbol: "n", name: "Pangkat (n)", defaultValue: 3 }, {symbol: "x", name: "Pada x =", defaultValue: 2}],
+                calculate: function(v) { return `f'(x) = ${v.n}x^(${v.n-1}). Pada x=${v.x}, f'(${v.x}) = ${v.n * v.x**(v.n-1)}`; },
+                examples: [ { problem: "Tentukan turunan dari f(x) = x³.", solution: "\\[f'(x) = 3x^{3-1} = 3x^2\\]" } ]
+            },
+            {
+                id: 8, title: "Integral Tentu (Aturan Pangkat)", latex: "\\int_a^b x^n \\,dx = \\left[ \\frac{x^{n+1}}{n+1} \\right]_a^b",
+                description: "Menghitung luas di bawah kurva f(x)=xⁿ dari x=a hingga x=b.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [ { symbol: "n", name: "Pangkat (n)", defaultValue: 2 }, { symbol: "a", name: "Batas bawah (a)", defaultValue: 0 }, { symbol: "b", name: "Batas atas (b)", defaultValue: 1 } ],
+                calculate: function(v) { if(v.n === -1) return "n tidak boleh -1"; const res = (v.b**(v.n+1))/(v.n+1) - (v.a**(v.n+1))/(v.n+1); return `Hasil integral = ${res.toFixed(3)}`; },
+                examples: [ { problem: "Hitung integral dari x² dari x=0 sampai x=1.", solution: "\\[\\int_0^1 x^2 \\,dx = \\frac{1^3}{3} - \\frac{0^3}{3} = \\frac{1}{3}\\]" } ]
+            },
+            {
+                id: 23, title: "Aturan Produk Turunan", latex: "(uv)' = u'v + uv'",
+                description: "Aturan untuk mencari turunan dari perkalian dua fungsi, u(x) dan v(x).", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Cari turunan dari f(x) = x² sin(x).", solution: "Misal u=x², v=sin(x). Maka u'=2x, v'=cos(x). \\[f'(x) = (2x)(\\sin x) + (x^2)(\\cos x)\\]" } ]
+            },
+            {
+                id: 24, title: "Integral Parsial", latex: "\\int u \\,dv = uv - \\int v \\,du",
+                description: "Teknik pengintegralan yang merupakan kebalikan dari aturan produk turunan.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung ∫x cos(x) dx.", solution: "Misal u=x, dv=cos(x)dx. Maka du=dx, v=sin(x).\\[\\int x \\cos x \\,dx = x \\sin x - \\int \\sin x \\,dx = x \\sin x + \\cos x + C\\]" } ]
+            },
+            {
+                id: 29, title: "Deret Taylor", latex: "f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!} (x-a)^n",
+                description: "Representasi fungsi matematika sebagai jumlahan tak hingga dari suku-suku yang dihitung dari turunan fungsi tersebut di satu titik.", level: "Advanced", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tuliskan beberapa suku pertama deret Taylor untuk f(x) = e^x di sekitar a=0 (Deret Maclaurin).", solution: "f(0)=1, f'(0)=1, f''(0)=1, dst. \\[e^x = \\frac{1}{0!}x^0 + \\frac{1}{1!}x^1 + \\frac{1}{2!}x^2 + \\dots = 1 + x + \\frac{x^2}{2} + \\dots\\]" } ]
+            },
+            // --- STATISTICS & PROBABILITY ---
+            {
+                id: 9, title: "Rata-rata Aritmetika (Mean)", latex: "\\bar{x} = \\frac{\\sum_{i=1}^n x_i}{n}",
+                description: "Nilai rata-rata dari sekumpulan data.", level: "SD", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tentukan rata-rata dari data: 2, 4, 6, 8.", solution: "\\[\\bar{x} = \\frac{2+4+6+8}{4} = 5\\]" } ]
+            },
+            {
+                id: 25, title: "Standar Deviasi (Populasi)", latex: "\\sigma = \\sqrt{\\frac{\\sum (x_i - \\mu)^2}{N}}",
+                description: "Ukuran sebaran data dari rata-rata populasi (μ).", level: "SMA", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Data populasi: 2, 4, 6, 8. Rata-rata μ=5. Hitung standar deviasi!", solution: "\\[\\sigma = \\sqrt{\\frac{(2-5)^2+(4-5)^2+(6-5)^2+(8-5)^2}{4}} = \\sqrt{5} \\approx 2.236\\]" } ]
+            },
+            {
+                id: 30, title: "Entropi Informasi Shannon", latex: "H(X) = -\\sum_{i=1}^{n} P(x_i) \\log_b P(x_i)",
+                description: "Mengukur ketidakpastian dalam sebuah variabel acak. Merupakan dasar dari teori informasi.", level: "Advanced", topics: ["Statistika", "Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Koin seimbang (P(gambar)=0.5, P(angka)=0.5). Hitung entropinya (log basis 2).", solution: "\\[H = - (0.5 \\log_2 0.5 + 0.5 \\log_2 0.5) = - (0.5(-1) + 0.5(-1)) = 1 \\text{ bit}\\]" } ]
+            },
+            // --- PHYSICS & ADVANCED ---
+            {
+                id: 11, title: "Hukum Ohm", latex: "V = IR",
+                description: "Tegangan (V) sama dengan kuat arus (I) dikalikan hambatan (R).", level: "SMP", topics: ["Fisika", "Aljabar"],
+                variables: [ { symbol: "I", name: "Arus (Ampere)", defaultValue: 2 }, { symbol: "R", name: "Hambatan (Ohm)", defaultValue: 6 } ],
+                calculate: function(v) { return `Tegangan (V) = ${(v.I * v.R).toFixed(2)} Volt`; },
+                examples: [ { problem: "Arus 2A pada resistor 6Ω. Tegangannya?", solution: "\\[V = (2\\text{ A}) \\times (6\\text{ Ω}) = 12\\text{ Volt}\\]" } ]
+            },
+            {
+                id: 13, title: "Rumus Polihedra Euler", latex: "V - E + F = 2",
+                description: "Hubungan antara titik sudut (V), rusuk (E), dan sisi (F) pada polihedra.", level: "Advanced", topics: ["Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Kubus memiliki 8 titik sudut, 12 rusuk. Berapa sisinya?", solution: "\\[8 - 12 + F = 2 \\implies F = 6\\]" } ]
+            },
+            {
+                id: 14, title: "Faktor Lorentz", latex: "\\gamma = \\frac{1}{\\sqrt{1 - v^2/c^2}}",
+                description: "Faktor dalam relativitas khusus yang menjelaskan perubahan waktu, panjang, dan massa.", level: "Advanced", topics: ["Fisika", "Aljabar"],
+                variables: [ { symbol: "v", name: "Kecepatan (kelipatan c)", defaultValue: 0.8 } ],
+                calculate: function(v) { if(v.v >= 1) return "Kecepatan tidak bisa >= c"; const gamma = 1 / Math.sqrt(1 - v.v**2); return `Faktor Lorentz (γ) = ${gamma.toFixed(4)}`; },
+                examples: [ { problem: "Hitung faktor Lorentz untuk v=0.8c.", solution: "\\[\\gamma = \\frac{1}{\\sqrt{1 - 0.8^2}} = 1.67\\]" } ]
+            },
+            {
+                id: 26, title: "Hukum Gravitasi Newton", latex: "F = G \\frac{m_1 m_2}{r^2}",
+                description: "Gaya tarik gravitasi (F) antara dua benda bermassa (m₁, m₂).", level: "SMA", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Bagaimana gaya gravitasi berubah jika jarak menjadi dua kali lipat?", solution: "Karena F berbanding terbalik dengan r², jika r menjadi 2r, maka gaya baru menjadi \\[F' = \\frac{1}{4}F\\] Gayanya menjadi seperempat." } ]
+            },
+            {
+                id: 27, title: "Identitas Euler", latex: "e^{i\\pi} + 1 = 0",
+                description: "Menghubungkan lima konstanta fundamental matematika: e, i, π, 1, dan 0.", level: "Advanced", topics: ["Kalkulus", "Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa makna dari identitas Euler?", solution: "Persamaan ini menunjukkan hubungan tak terduga antara analisis kompleks (e, i) dan geometri (π). Ini adalah kasus khusus dari Rumus Euler: e^(ix) = cos(x) + i sin(x)." } ]
+            },
+            {
+                id: 31, title: "Ekuivalensi Massa-Energi", latex: "E=mc^2",
+                description: "Rumus paling terkenal dari Albert Einstein, menyatakan bahwa energi (E) dan massa (m) adalah ekuivalen dan dapat saling berubah, dihubungkan oleh kuadrat kecepatan cahaya (c).", level: "Advanced", topics: ["Fisika"],
+                variables: [ { symbol: "m", name: "Massa (kg)", defaultValue: 1 } ],
+                calculate: function(v) { const c = 299792458; return `Energi (E) = ${(v.m * c**2).toExponential(4)} Joule`; },
+                examples: [ { problem: "Berapa energi yang terkandung dalam 1 kg massa diam?", solution: "c ≈ 3 x 10⁸ m/s. \\[E = 1 \\times (3 \\times 10^8)^2 = 9 \\times 10^{16} \\text{ Joule}\\]" } ]
+            },
+            {
+                id: 32, title: "Persamaan Schrödinger", latex: "i\\hbar\\frac{\\partial}{\\partial t}\\Psi(r,t) = \\hat{H}\\Psi(r,t)",
+                description: "Persamaan fundamental dalam mekanika kuantum yang mendeskripsikan bagaimana keadaan kuantum dari sebuah sistem fisik berubah seiring waktu.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa peran fungsi gelombang Ψ (Psi)?", solution: "Fungsi gelombang Ψ adalah deskripsi matematis dari keadaan kuantum sebuah sistem. Kuadrat dari magnitudonya, |Ψ|², merepresentasikan probabilitas menemukan partikel pada posisi dan waktu tertentu." } ]
+            },
+            // --- OTHERS ---
+            {
+                id: 33, title: "Bunga Majemuk", latex: "A = P(1 + \\frac{r}{n})^{nt}",
+                description: "Menghitung jumlah uang di masa depan (A) dari investasi awal (P) dengan suku bunga (r) yang dimajemukkan n kali per tahun selama t tahun.", level: "SMA", topics: ["Lainnya", "Aljabar"],
+                variables: [ { symbol: "P", name: "Pokok (Rp)", defaultValue: 1000000 }, { symbol: "r", name: "Bunga Tahunan (%)", defaultValue: 5 }, { symbol: "n", name: "Periode/tahun", defaultValue: 12 }, { symbol: "t", name: "Tahun", defaultValue: 10 } ],
+                calculate: function(v) { const amount = v.P * (1 + (v.r/100)/v.n)**(v.n*v.t); return `Total Akhir (A) = Rp ${amount.toLocaleString('id-ID', {maximumFractionDigits: 0})}`; },
+                examples: [ { problem: "Modal 1jt, bunga 5%/tahun, dimajemukkan bulanan. Berapa total setelah 10 tahun?", solution: "P=1jt, r=0.05, n=12, t=10. \\[A = 10^6(1 + \\frac{0.05}{12})^{12 \\times 10} \\approx Rp 1.647.009,5\\]" } ]
+            },
+            {
+                id: 34, title: "Luas Persegi", latex: "L = s^2",
+                description: "Menghitung luas area sebuah persegi dengan panjang sisi (s).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "s", name: "Sisi (s)", defaultValue: 5 } ],
+                calculate: function(v) { return `Luas = ${v.s**2}`; },
+                examples: [ { problem: "Sebuah persegi memiliki sisi 5 cm. Berapa luasnya?", solution: "\\[L = 5^2 = 25 \\text{ cm}^2\\]" } ]
+            },
+            {
+                id: 35, title: "Keliling Persegi", latex: "K = 4s",
+                description: "Menghitung panjang keliling sebuah persegi dengan sisi (s).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "s", name: "Sisi (s)", defaultValue: 6 } ],
+                calculate: function(v) { return `Keliling = ${4 * v.s}`; },
+                examples: [ { problem: "Keliling persegi dengan sisi 6 cm adalah?", solution: "\\[K = 4 \\times 6 = 24 \\text{ cm}\\]" } ]
+            },
+            {
+                id: 36, title: "Luas Persegi Panjang", latex: "L = p \\times l",
+                description: "Menghitung luas area sebuah persegi panjang dengan panjang (p) dan lebar (l).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "p", name: "Panjang (p)", defaultValue: 8 }, { symbol: "l", name: "Lebar (l)", defaultValue: 5 } ],
+                calculate: function(v) { return `Luas = ${v.p * v.l}`; },
+                examples: [ { problem: "Hitung luas persegi panjang dengan p=8m dan l=5m.", solution: "\\[L = 8 \\times 5 = 40 \\text{ m}^2\\]" } ]
+            },
+            {
+                id: 37, title: "Keliling Persegi Panjang", latex: "K = 2(p + l)",
+                description: "Menghitung panjang keliling sebuah persegi panjang.", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "p", name: "Panjang (p)", defaultValue: 7 }, { symbol: "l", name: "Lebar (l)", defaultValue: 4 } ],
+                calculate: function(v) { return `Keliling = ${2 * (v.p + v.l)}`; },
+                examples: [ { problem: "Keliling persegi panjang p=7cm, l=4cm?", solution: "\\[K = 2(7+4) = 22 \\text{ cm}\\]" } ]
+            },
+            {
+                id: 38, title: "Luas Segitiga", latex: "L = \\frac{1}{2} a \\times t",
+                description: "Menghitung luas sebuah segitiga dengan alas (a) dan tinggi (t).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "a", name: "Alas (a)", defaultValue: 10 }, { symbol: "t", name: "Tinggi (t)", defaultValue: 8 } ],
+                calculate: function(v) { return `Luas = ${0.5 * v.a * v.t}`; },
+                examples: [ { problem: "Segitiga dengan alas 10cm dan tinggi 8cm, luasnya?", solution: "\\[L = \\frac{1}{2} \\times 10 \\times 8 = 40 \\text{ cm}^2\\]" } ]
+            },
+            {
+                id: 39, title: "Keliling Lingkaran", latex: "K = 2 \\pi r",
+                description: "Menghitung panjang keliling sebuah lingkaran dengan jari-jari (r).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 7 } ],
+                calculate: function(v) { return `Keliling = ${(2 * Math.PI * v.r).toFixed(2)}`; },
+                examples: [ { problem: "Berapa keliling lingkaran dengan jari-jari 7cm?", solution: "\\[K = 2 \\times \\pi \\times 7 \\approx 44 \\text{ cm}\\]" } ]
+            },
+            {
+                id: 40, title: "Luas Trapesium", latex: "L = \\frac{1}{2} (a+b) \\times t",
+                description: "Menghitung luas trapesium dengan sisi sejajar (a, b) dan tinggi (t).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "a", name: "Sisi atas (a)", defaultValue: 5 }, { symbol: "b", name: "Sisi bawah (b)", defaultValue: 7 }, { symbol: "t", name: "Tinggi (t)", defaultValue: 4 } ],
+                calculate: function(v) { return `Luas = ${0.5 * (v.a + v.b) * v.t}`; },
+                examples: [ { problem: "Trapesium sisi sejajar 5, 7 dan tinggi 4. Luasnya?", solution: "\\[L = \\frac{1}{2}(5+7) \\times 4 = 24\\]" } ]
+            },
+            {
+                id: 41, title: "Luas Jajar Genjang", latex: "L = a \\times t",
+                description: "Menghitung luas jajar genjang dengan panjang alas (a) dan tinggi (t).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "a", name: "Alas (a)", defaultValue: 9 }, { symbol: "t", name: "Tinggi (t)", defaultValue: 5 } ],
+                calculate: function(v) { return `Luas = ${v.a * v.t}`; },
+                examples: [ { problem: "Luas jajar genjang dengan alas 9 dan tinggi 5 adalah?", solution: "\\[L = 9 \\times 5 = 45\\]" } ]
+            },
+            {
+                id: 42, title: "Volume Kubus", latex: "V = s^3",
+                description: "Menghitung volume sebuah kubus dengan panjang sisi (s).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "s", name: "Sisi (s)", defaultValue: 4 } ],
+                calculate: function(v) { return `Volume = ${v.s**3}`; },
+                examples: [ { problem: "Volume kubus dengan sisi 4 cm?", solution: "\\[V = 4^3 = 64 \\text{ cm}^3\\]" } ]
+            },
+            {
+                id: 43, title: "Luas Permukaan Kubus", latex: "L_p = 6s^2",
+                description: "Menghitung luas seluruh permukaan sebuah kubus.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "s", name: "Sisi (s)", defaultValue: 5 } ],
+                calculate: function(v) { return `Luas Permukaan = ${6 * v.s**2}`; },
+                examples: [ { problem: "Luas permukaan kubus dengan sisi 5cm?", solution: "\\[L_p = 6 \\times 5^2 = 150 \\text{ cm}^2\\]" } ]
+            },
+            {
+                id: 44, title: "Volume Balok", latex: "V = p \\times l \\times t",
+                description: "Menghitung volume sebuah balok dengan panjang (p), lebar (l), dan tinggi (t).", level: "SD", topics: ["Geometri"],
+                variables: [ { symbol: "p", name: "Panjang (p)", defaultValue: 5 }, { symbol: "l", name: "Lebar (l)", defaultValue: 4 }, { symbol: "t", name: "Tinggi (t)", defaultValue: 3 } ],
+                calculate: function(v) { return `Volume = ${v.p * v.l * v.t}`; },
+                examples: [ { problem: "Balok p=5, l=4, t=3. Volumenya?", solution: "\\[V = 5 \\times 4 \\times 3 = 60\\]" } ]
+            },
+            {
+                id: 45, title: "Luas Permukaan Balok", latex: "L_p = 2(pl + pt + lt)",
+                description: "Menghitung luas seluruh permukaan sebuah balok.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "p", name: "Panjang (p)", defaultValue: 5 }, { symbol: "l", name: "Lebar (l)", defaultValue: 4 }, { symbol: "t", name: "Tinggi (t)", defaultValue: 3 } ],
+                calculate: function(v) { return `Luas Permukaan = ${2 * ((v.p*v.l) + (v.p*v.t) + (v.l*v.t))}`; },
+                examples: [ { problem: "Luas permukaan balok p=5, l=4, t=3?", solution: "\\[L_p = 2(20+15+12) = 94\\]" } ]
+            },
+            {
+                id: 46, title: "Luas Permukaan Tabung", latex: "L_p = 2\\pi r (r+h)",
+                description: "Menghitung luas permukaan tabung (silinder) dengan jari-jari (r) dan tinggi (h).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 7 }, { symbol: "h", name: "Tinggi (h)", defaultValue: 10 } ],
+                calculate: function(v) { return `Luas Permukaan = ${(2 * Math.PI * v.r * (v.r + v.h)).toFixed(2)}`; },
+                examples: [ { problem: "Tabung r=7, h=10. Luas permukaannya?", solution: "\\[L_p = 2\\pi(7)(7+10) \\approx 748\\]" } ]
+            },
+             {
+                id: 47, title: "Luas Permukaan Bola", latex: "L_p = 4\\pi r^2",
+                description: "Menghitung luas permukaan bola dengan jari-jari (r).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 5 } ],
+                calculate: function(v) { return `Luas Permukaan = ${(4 * Math.PI * v.r**2).toFixed(2)}`; },
+                examples: [ { problem: "Bola r=5. Luas permukaannya?", solution: "\\[L_p = 4\\pi(5^2) \\approx 314.16\\]" } ]
+            },
+            {
+                id: 48, title: "Selisih Dua Kuadrat", latex: "a^2 - b^2 = (a-b)(a+b)",
+                description: "Pemfaktoran aljabar untuk selisih dari dua bilangan kuadrat.", level: "SMP", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Faktorkan x² - 9.", solution: "\\[x^2 - 3^2 = (x-3)(x+3)\\]" } ]
+            },
+            {
+                id: 49, title: "Kuadrat Sempurna (Penjumlahan)", latex: "(a+b)^2 = a^2 + 2ab + b^2",
+                description: "Ekspansi aljabar untuk kuadrat dari sebuah binomial penjumlahan.", level: "SMP", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Jabarkan (x+4)².", solution: "\\[(x+4)^2 = x^2 + 2(x)(4) + 4^2 = x^2+8x+16\\]" } ]
+            },
+            {
+                id: 50, title: "Gradien Garis Lurus (Dua Titik)", latex: "m = \\frac{y_2 - y_1}{x_2 - x_1}",
+                description: "Menghitung gradien (kemiringan) garis yang melalui dua titik (x₁,y₁) dan (x₂,y₂).", level: "SMP", topics: ["Aljabar", "Geometri"],
+                variables: [ { symbol: "x1", name: "x₁", defaultValue: 2 }, { symbol: "y1", name: "y₁", defaultValue: 3 }, { symbol: "x2", name: "x₂", defaultValue: 4 }, { symbol: "y2", name: "y₂", defaultValue: 7 } ],
+                calculate: function(v) { if(v.x2 === v.x1) return "Garis vertikal (gradien tak terdefinisi)"; return `Gradien (m) = ${(v.y2 - v.y1) / (v.x2 - v.x1)}`; },
+                examples: [ { problem: "Gradien garis melalui (2,3) dan (4,7)?", solution: "\\[m = \\frac{7-3}{4-2} = \\frac{4}{2} = 2\\]" } ]
+            },
+            {
+                id: 51, title: "Persamaan Garis (melalui 1 titik)", latex: "y - y_1 = m(x - x_1)",
+                description: "Mencari persamaan garis lurus jika diketahui gradien (m) dan satu titik (x₁,y₁) yang dilaluinya.", level: "SMP", topics: ["Aljabar", "Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Persamaan garis dengan m=3 melalui (2,5)?", solution: "\\[y - 5 = 3(x-2) \\implies y = 3x - 1\\]" } ]
+            },
+            {
+                id: 52, title: "Diskriminan Persamaan Kuadrat", latex: "D = b^2 - 4ac",
+                description: "Nilai diskriminan (D) dari ax²+bx+c=0 untuk menentukan sifat akar-akarnya. D>0: 2 akar real beda, D=0: 1 akar real, D<0: akar imajiner.", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "a", defaultValue: 1 }, { symbol: "b", name: "b", defaultValue: -5 }, { symbol: "c", name: "c", defaultValue: 6 } ],
+                calculate: function(v) { return `Diskriminan (D) = ${v.b**2 - 4*v.a*v.c}`; },
+                examples: [ { problem: "Sifat akar dari x² - 5x + 6 = 0?", solution: "\\[D = (-5)^2 - 4(1)(6) = 1 > 0\\]. Memiliki 2 akar real berbeda." } ]
+            },
+            {
+                id: 53, title: "Luas Segitiga (Aturan Sinus)", latex: "L = \\frac{1}{2}ab \\sin C",
+                description: "Menghitung luas segitiga jika diketahui dua sisi (a, b) dan sudut yang diapitnya (C).", level: "SMA", topics: ["Trigonometri", "Geometri"],
+                variables: [ { symbol: "a", name: "Sisi a", defaultValue: 10 }, { symbol: "b", name: "Sisi b", defaultValue: 12 }, { symbol: "C", name: "Sudut C (°)", defaultValue: 30 } ],
+                calculate: function(v) { const radC = v.C * Math.PI/180; return `Luas = ${(0.5 * v.a * v.b * Math.sin(radC)).toFixed(2)}`; },
+                examples: [ { problem: "Segitiga a=10, b=12, ∠C=30°. Luasnya?", solution: "\\[L = \\frac{1}{2}(10)(12) \\sin 30° = 30\\]" } ]
+            },
+            {
+                id: 54, title: "Identitas Tangen", latex: "\\tan \\theta = \\frac{\\sin \\theta}{\\cos \\theta}",
+                description: "Hubungan fundamental yang mendefinisikan tangen sebagai perbandingan sinus dan kosinus.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Jika sin θ = 3/5 dan cos θ = 4/5, berapa tan θ?", solution: "\\[\\tan \\theta = \\frac{3/5}{4/5} = \\frac{3}{4}\\]" } ]
+            },
+            {
+                id: 55, title: "Rumus Sudut Ganda (Sinus)", latex: "\\sin 2\\theta = 2 \\sin \\theta \\cos \\theta",
+                description: "Mencari nilai sinus dari sudut ganda (2θ) dari nilai sinus dan kosinus sudut tunggalnya.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sederhanakan 2 sin(15°) cos(15°).", solution: "\\[2 \\sin(15°) \\cos(15°) = \\sin(2 \\times 15°) = \\sin(30°) = 0.5\\]" } ]
+            },
+            {
+                id: 56, title: "Rumus Sudut Ganda (Kosinus)", latex: "\\cos 2\\theta = \\cos^2 \\theta - \\sin^2 \\theta",
+                description: "Mencari nilai kosinus dari sudut ganda. Bisa juga ditulis 2cos²θ-1 atau 1-2sin²θ.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Jika cos θ = 4/5, cari cos 2θ (θ di kuadran 1).", solution: "sin θ = 3/5. \\[\\cos 2\\theta = (4/5)^2 - (3/5)^2 = 16/25 - 9/25 = 7/25\\]" } ]
+            },
+            {
+                id: 57, title: "Kecepatan, Jarak, Waktu", latex: "v = \\frac{s}{t}",
+                description: "Hubungan dasar antara kecepatan (v), jarak (s), dan waktu (t).", level: "SD", topics: ["Fisika", "Lainnya"],
+                variables: [ { symbol: "s", name: "Jarak (km)", defaultValue: 100 }, { symbol: "t", name: "Waktu (jam)", defaultValue: 2 } ],
+                calculate: function(v) { return `Kecepatan (v) = ${(v.s / v.t).toFixed(2)} km/jam`; },
+                examples: [ { problem: "Mobil menempuh 100km dalam 2 jam. Kecepatannya?", solution: "\\[v = \\frac{100}{2} = 50 \\text{ km/jam}\\]" } ]
+            },
+            {
+                id: 58, title: "Skala Peta", latex: "\\text{Skala} = \\frac{\\text{Jarak Peta}}{\\text{Jarak Sebenarnya}}",
+                description: "Perbandingan antara jarak pada gambar (peta) dengan jarak sesungguhnya di lapangan.", level: "SD", topics: ["Lainnya", "Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Jarak kota A-B di peta 5 cm. Jarak sebenarnya 100 km. Berapa skalanya?", solution: "100 km = 10.000.000 cm. \\[\\text{Skala} = \\frac{5}{10.000.000} = \\frac{1}{2.000.000}\\] Skalanya 1:2.000.000" } ]
+            },
+            {
+                id: 59, title: "Titik Tengah Ruas Garis", latex: "M = \\left( \\frac{x_1+x_2}{2}, \\frac{y_1+y_2}{2} \\right)",
+                description: "Mencari koordinat titik tengah (M) dari ruas garis yang menghubungkan titik (x₁, y₁) dan (x₂, y₂).", level: "SMP", topics: ["Geometri", "Aljabar"],
+                variables: [ { symbol: "x1", name: "x₁", defaultValue: 1 }, { symbol: "y1", name: "y₁", defaultValue: 2 }, { symbol: "x2", name: "x₂", defaultValue: 7 }, { symbol: "y2", name: "y₂", defaultValue: 8 } ],
+                calculate: function(v) { return `Titik Tengah = (${(v.x1+v.x2)/2}, ${(v.y1+v.y2)/2})`; },
+                examples: [ { problem: "Tentukan titik tengah antara (1,2) dan (7,8).", solution: "\\[M = \\left( \\frac{1+7}{2}, \\frac{2+8}{2} \\right) = (4, 5)\\]" } ]
+            },
+            {
+                id: 60, title: "Deret Geometri Tak Hingga", latex: "S_\\infty = \\frac{a}{1-r}",
+                description: "Menghitung jumlah deret geometri tak hingga dengan rasio antara -1 dan 1 (-1 < r < 1).", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Suku pertama (a)", defaultValue: 10 }, { symbol: "r", name: "Rasio (r)", defaultValue: 0.5 } ],
+                calculate: function(v) { if(v.r <= -1 || v.r >= 1) return "Rasio harus antara -1 dan 1"; return `Jumlah tak hingga = ${v.a / (1-v.r)}`; },
+                examples: [ { problem: "Hitung jumlah deret 10 + 5 + 2.5 + ...", solution: "a=10, r=0.5. \\[S_\\infty = \\frac{10}{1-0.5} = 20\\]" } ]
+            },
+            // --- PENAMBAHAN TAHAP 2 ---
+            {
+                id: 61, title: "Rumus Heron (Luas Segitiga)", latex: "L = \\sqrt{s(s-a)(s-b)(s-c)}",
+                description: "Menghitung luas segitiga jika ketiga sisinya (a, b, c) diketahui. 's' adalah setengah keliling, s = (a+b+c)/2.", level: "SMA", topics: ["Geometri"],
+                variables: [ { symbol: "a", name: "Sisi a", defaultValue: 5 }, { symbol: "b", name: "Sisi b", defaultValue: 6 }, { symbol: "c", name: "Sisi c", defaultValue: 7 } ],
+                calculate: function(v) { const s = (v.a+v.b+v.c)/2; const area = Math.sqrt(s*(s-v.a)*(s-v.b)*(s-v.c)); return `Setengah keliling (s) = ${s}. Luas = ${area.toFixed(2)}`;},
+                examples: [ { problem: "Segitiga dengan sisi 5, 6, 7. Luasnya?", solution: "s = (5+6+7)/2 = 9. \\[L = \\sqrt{9(9-5)(9-6)(9-7)} = \\sqrt{216} \\approx 14.7\\]" } ]
+            },
+            {
+                id: 62, title: "Sifat Logaritma (Perkalian)", latex: "^a\\log(xy) = ^a\\log x + ^a\\log y",
+                description: "Logaritma dari sebuah perkalian adalah jumlah dari logaritma masing-masing faktor.", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sederhanakan ²log 4 + ²log 8.", solution: "\\[^2\\log 4 + ^2\\log 8 = ^2\\log(4 \\times 8) = ^2\\log 32 = 5\\]" } ]
+            },
+            {
+                id: 63, title: "Sifat Logaritma (Pembagian)", latex: "^a\\log(x/y) = ^a\\log x - ^a\\log y",
+                description: "Logaritma dari sebuah pembagian adalah selisih dari logaritma pembilang dan penyebut.", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sederhanakan ³log 54 - ³log 2.", solution: "\\[^3\\log 54 - ^3\\log 2 = ^3\\log(54/2) = ^3\\log 27 = 3\\]" } ]
+            },
+            {
+                id: 64, title: "Sifat Logaritma (Pangkat)", latex: "^a\\log(x^n) = n \\cdot ^a\\log x",
+                description: "Logaritma dari bilangan berpangkat adalah pangkat dikalikan dengan logaritma bilangan tersebut.", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung nilai dari ²log(8^5).", solution: "\\[^2\\log(8^5) = 5 \\cdot ^2\\log 8 = 5 \\cdot 3 = 15\\]" } ]
+            },
+            {
+                id: 65, title: "Bunga Tunggal", latex: "A = P(1 + rt)",
+                description: "Menghitung total uang (A) dari modal awal (P) dengan suku bunga tunggal (r) selama periode (t).", level: "SMP", topics: ["Lainnya", "Aljabar"],
+                variables: [ { symbol: "P", name: "Pokok (Rp)", defaultValue: 1000000 }, { symbol: "r", name: "Bunga per periode (%)", defaultValue: 2 }, { symbol: "t", name: "Jumlah periode", defaultValue: 10 } ],
+                calculate: function(v) { const amount = v.P * (1 + (v.r/100)*v.t); return `Total Akhir (A) = Rp ${amount.toLocaleString('id-ID', {maximumFractionDigits: 0})}`;},
+                examples: [ { problem: "Modal 1jt, bunga tunggal 2% per bulan. Total setelah 10 bulan?", solution: "\\[A = 1.000.000(1 + 0.02 \\times 10) = Rp 1.200.000\\]" } ]
+            },
+            {
+                id: 66, title: "Diagonal Bidang Kubus", latex: "d_b = s\\sqrt{2}",
+                description: "Menghitung panjang diagonal pada salah satu sisi (bidang) kubus dengan panjang sisi (s).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "s", name: "Sisi (s)", defaultValue: 10 } ],
+                calculate: function(v) { return `Diagonal Bidang = ${(v.s * Math.sqrt(2)).toFixed(2)}`;},
+                examples: [ { problem: "Kubus dengan sisi 10 cm. Panjang diagonal bidangnya?", solution: "\\[d_b = 10\\sqrt{2} \\approx 14.14 \\text{ cm}\\]" } ]
+            },
+            {
+                id: 67, title: "Diagonal Ruang Kubus", latex: "d_r = s\\sqrt{3}",
+                description: "Menghitung panjang diagonal yang melintasi ruang di dalam kubus dengan panjang sisi (s).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "s", name: "Sisi (s)", defaultValue: 10 } ],
+                calculate: function(v) { return `Diagonal Ruang = ${(v.s * Math.sqrt(3)).toFixed(2)}`;},
+                examples: [ { problem: "Kubus dengan sisi 10 cm. Panjang diagonal ruangnya?", solution: "\\[d_r = 10\\sqrt{3} \\approx 17.32 \\text{ cm}\\]" } ]
+            },
+            {
+                id: 68, title: "Persamaan Parabola (Puncak 0,0)", latex: "y^2 = 4px",
+                description: "Persamaan standar parabola yang terbuka ke kanan dengan puncak di (0,0) dan fokus di (p,0).", level: "SMA", topics: ["Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tentukan fokus dari parabola y² = 12x.", solution: "4p = 12, maka p = 3. Fokusnya berada di (3,0)." } ]
+            },
+            {
+                id: 69, title: "Persamaan Lingkaran (Pusat a,b)", latex: "(x-a)^2 + (y-b)^2 = r^2",
+                description: "Persamaan standar lingkaran dengan pusat di (a,b) and jari-jari (r).", level: "SMA", topics: ["Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tuliskan persamaan lingkaran pusat (2,-3) dan jari-jari 5.", solution: "\\[(x-2)^2 + (y-(-3))^2 = 5^2 \\implies (x-2)^2 + (y+3)^2 = 25\\]" } ]
+            },
+            {
+                id: 70, title: "Garis Singgung Lingkaran di Titik (x₁, y₁)", latex: "xx_1 + yy_1 = r^2",
+                description: "Mencari persamaan garis singgung pada lingkaran x²+y²=r² yang melalui titik (x₁,y₁) pada lingkaran.", level: "SMA", topics: ["Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Cari PGL pada lingkaran x²+y²=25 di titik (3,4).", solution: "\\[x(3) + y(4) = 25 \\implies 3x+4y=25\\]" } ]
+            },
+            {
+                id: 71, title: "Turunan Sinus", latex: "\\frac{d}{dx}(\\sin x) = \\cos x",
+                description: "Aturan turunan dasar untuk fungsi sinus.", level: "SMA", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Turunan dari f(x) = 5 sin(x) adalah...", solution: "\\[f'(x) = 5 \\cos x\\]" } ]
+            },
+            {
+                id: 72, title: "Turunan Kosinus", latex: "\\frac{d}{dx}(\\cos x) = -\\sin x",
+                description: "Aturan turunan dasar untuk fungsi kosinus.", level: "SMA", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Turunan dari f(x) = -2 cos(x) adalah...", solution: "\\[f'(x) = -2(-\\sin x) = 2 \\sin x\\]" } ]
+            },
+            {
+                id: 73, title: "Turunan Aturan Rantai", latex: "\\frac{dy}{dx} = \\frac{dy}{du} \\cdot \\frac{du}{dx}",
+                description: "Aturan untuk mencari turunan fungsi komposit, yaitu fungsi di dalam fungsi.", level: "SMA", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Cari turunan dari y = (2x+1)³.", solution: "Misal u=2x+1, y=u³. dy/du = 3u², du/dx = 2. \\[dy/dx = 3u^2 \\cdot 2 = 6(2x+1)^2\\]" } ]
+            },
+            {
+                id: 74, title: "Mean Data Berkelompok", latex: "\\bar{x} = \\frac{\\sum f_i x_i}{\\sum f_i}",
+                description: "Menghitung rata-rata dari data yang disajikan dalam tabel distribusi frekuensi. xᵢ adalah titik tengah kelas.", level: "SMA", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Data: [Kelas 1-5, f=4], [Kelas 6-10, f=6]. Rata-ratanya?", solution: "x₁=3, x₂=8. \\[\\bar{x} = \\frac{(4)(3)+(6)(8)}{4+6} = \\frac{60}{10} = 6\\]" } ]
+            },
+            {
+                id: 75, title: "Modus Data Berkelompok", latex: "Mo = T_b + \\left( \\frac{d_1}{d_1+d_2} \\right) p",
+                description: "Menghitung modus dari data berkelompok. T_b: tepi bawah kelas modus, d₁: selisih frekuensi dgn kelas sebelumnya, d₂: selisih frekuensi dgn kelas sesudahnya, p: panjang kelas.", level: "SMA", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Contoh: Kelas modus (21-25) f=10. f sebelum=7, f sesudah=8. T_b=20.5, p=5.", solution: "d₁=10-7=3, d₂=10-8=2. \\[Mo = 20.5 + (\\frac{3}{3+2})5 = 23.5\\]" } ]
+            },
+            {
+                id: 76, title: "Perkalian Titik (Dot Product)", latex: "\\vec{a} \\cdot \\vec{b} = |\\vec{a}| |\\vec{b}| \\cos \\theta",
+                description: "Menghitung perkalian skalar antara dua vektor. Hasilnya adalah sebuah skalar (angka).", level: "SMA", topics: ["Aljabar", "Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Vektor a panjang 4, vektor b panjang 5, sudut 60°. Dot product?", solution: "\\[\\vec{a} \\cdot \\vec{b} = (4)(5) \\cos 60° = 20 \\times 0.5 = 10\\]" } ]
+            },
+            {
+                id: 77, title: "Gerak Lurus Beraturan (GLB)", latex: "s = v \\cdot t",
+                description: "Rumus gerak benda dengan kecepatan (v) konstan menempuh jarak (s) dalam waktu (t).", level: "SMP", topics: ["Fisika"],
+                variables: [ { symbol: "v", name: "Kecepatan (m/s)", defaultValue: 10 }, { symbol: "t", name: "Waktu (s)", defaultValue: 5 } ],
+                calculate: function(v) { return `Jarak (s) = ${v.v * v.t} meter`; },
+                examples: [ { problem: "Benda bergerak 10 m/s selama 5 detik. Jarak tempuhnya?", solution: "\\[s = 10 \\times 5 = 50 \\text{ meter}\\]" } ]
+            },
+            {
+                id: 78, title: "Gerak Lurus Berubah Beraturan (GLBB) - Kecepatan", latex: "v_t = v_0 + at",
+                description: "Menghitung kecepatan akhir (vₜ) benda yang bergerak dengan kecepatan awal (v₀) dan percepatan (a) selama waktu (t).", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "v0", name: "Kecepatan awal (m/s)", defaultValue: 0 }, { symbol: "a", name: "Percepatan (m/s²)", defaultValue: 2 }, { symbol: "t", name: "Waktu (s)", defaultValue: 4 } ],
+                calculate: function(v) { return `Kecepatan Akhir (vₜ) = ${v.v0 + v.a*v.t} m/s`;},
+                examples: [ { problem: "Benda dari diam dipercepat 2 m/s² selama 4 detik. Kecepatan akhirnya?", solution: "\\[v_t = 0 + 2 \\times 4 = 8 \\text{ m/s}\\]" } ]
+            },
+            {
+                id: 79, title: "Gerak Lurus Berubah Beraturan (GLBB) - Jarak", latex: "s = v_0 t + \\frac{1}{2}at^2",
+                description: "Menghitung jarak (s) yang ditempuh benda dalam gerak lurus berubah beraturan.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "v0", name: "Kecepatan awal (m/s)", defaultValue: 5 }, { symbol: "a", name: "Percepatan (m/s²)", defaultValue: 2 }, { symbol: "t", name: "Waktu (s)", defaultValue: 4 } ],
+                calculate: function(v) { return `Jarak (s) = ${(v.v0 * v.t) + (0.5 * v.a * v.t**2)} meter`;},
+                examples: [ { problem: "Benda v₀=5m/s, a=2m/s², t=4s. Jaraknya?", solution: "\\[s = (5)(4) + \\frac{1}{2}(2)(4^2) = 20 + 16 = 36 \\text{ m}\\]" } ]
+            },
+            {
+                id: 80, title: "Massa Jenis (Densitas)", latex: "\\rho = \\frac{m}{V}",
+                description: "Menghitung massa jenis (ρ) suatu benda, yaitu perbandingan massa (m) terhadap volumenya (V).", level: "SMP", topics: ["Fisika"],
+                variables: [ { symbol: "m", name: "Massa (kg)", defaultValue: 500 }, { symbol: "V", name: "Volume (m³)", defaultValue: 0.5 } ],
+                calculate: function(v) { return `Massa Jenis (ρ) = ${v.m/v.V} kg/m³`;},
+                examples: [ { problem: "Benda 500 kg memiliki volume 0.5 m³. Massa jenisnya?", solution: "\\[\\rho = \\frac{500}{0.5} = 1000 \\text{ kg/m³}\\]" } ]
+            },
+            // Menambahkan lebih banyak rumus lagi
+            {
+                id: 81, title: "Peluang Suatu Kejadian", latex: "P(A) = \\frac{n(A)}{n(S)}",
+                description: "Menghitung peluang kejadian A, yaitu jumlah hasil A dibagi dengan jumlah seluruh ruang sampel (S).", level: "SMP", topics: ["Statistika"],
+                variables: [ { symbol: "nA", name: "Jumlah kejadian A", defaultValue: 1 }, { symbol: "nS", name: "Jumlah ruang sampel", defaultValue: 6 } ],
+                calculate: function(v) { return `Peluang P(A) = ${(v.nA/v.nS).toFixed(3)}`;},
+                examples: [ { problem: "Peluang muncul angka 5 pada lemparan satu dadu?", solution: "n(A)=1, n(S)=6. \\[P(5) = \\frac{1}{6}\\]" } ]
+            },
+            {
+                id: 82, title: "Frekuensi Harapan", latex: "F_h(A) = P(A) \\times n",
+                description: "Menghitung frekuensi harapan kejadian A dari n kali percobaan.", level: "SMP", topics: ["Statistika"],
+                variables: [ { symbol: "PA", name: "Peluang A (desimal)", defaultValue: 0.5 }, { symbol: "n", name: "Jumlah percobaan", defaultValue: 100 } ],
+                calculate: function(v) { return `Frekuensi Harapan = ${v.PA * v.n}`},
+                examples: [ { problem: "Peluang lulus ujian 0.8. Dari 200 siswa, berapa yang diharapkan lulus?", solution: "\\[F_h = 0.8 \\times 200 = 160 \\text{ siswa}\\]" } ]
+            },
+            {
+                id: 83, title: "Rumus Sudut Ganda (Tangen)", latex: "\\tan 2\\theta = \\frac{2 \\tan \\theta}{1 - \\tan^2 \\theta}",
+                description: "Mencari nilai tangen dari sudut ganda (2θ) dari nilai tangen sudut tunggalnya.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Jika tan(θ) = 1/2, hitung tan(2θ).", solution: "\\[\\tan 2\\theta = \\frac{2(1/2)}{1 - (1/2)^2} = \\frac{1}{1 - 1/4} = \\frac{1}{3/4} = \\frac{4}{3}\\]" } ]
+            },
+            {
+                id: 84, title: "Jumlah dan Selisih Sudut (Sinus)", latex: "\\sin(A \\pm B) = \\sin A \\cos B \\pm \\cos A \\sin B",
+                description: "Menghitung nilai sinus dari jumlah atau selisih dua sudut.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung nilai eksak dari sin(75°).", solution: "sin(75°) = sin(45°+30°) = sin45°cos30° + cos45°sin30°. \\[\\[= (\\frac{\\sqrt{2}}{2})(\\frac{\\sqrt{3}}{2}) + (\\frac{\\sqrt{2}}{2})(\\frac{1}{2}) = \\frac{\\sqrt{6}+\\sqrt{2}}{4}\\]\\]" } ]
+            },
+            {
+                id: 85, title: "Jumlah dan Selisih Sudut (Kosinus)", latex: "\\cos(A \\pm B) = \\cos A \\cos B \\mp \\sin A \\sin B",
+                description: "Menghitung nilai kosinus dari jumlah atau selisih dua sudut. Perhatikan tanda operasi yang berlawanan.", level: "SMA", topics: ["Trigonometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung nilai eksak dari cos(15°).", solution: "cos(15°) = cos(45°-30°) = cos45°cos30° + sin45°sin30°. \\[\\[= (\\frac{\\sqrt{2}}{2})(\\frac{\\sqrt{3}}{2}) + (\\frac{\\sqrt{2}}{2})(\\frac{1}{2}) = \\frac{\\sqrt{6}+\\sqrt{2}}{4}\\]\\]" } ]
+            },
+            {
+                id: 86, title: "Perkalian Skalar Matriks", latex: "k \\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = \\begin{pmatrix} ka & kb \\\\ kc & kd \\end{pmatrix}",
+                description: "Mengalikan setiap elemen dalam matriks dengan sebuah bilangan skalar (k).", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung 3 * [[1, 2], [3, 4]].", solution: "\\[\\begin{pmatrix} 3 \\times 1 & 3 \\times 2 \\\\ 3 \\times 3 & 3 \\times 4 \\end{pmatrix} = \\begin{pmatrix} 3 & 6 \\\\ 9 & 12 \\end{pmatrix}\\]" } ]
+            },
+            {
+                id: 87, title: "Invers Matriks 2x2", latex: "A^{-1} = \\frac{1}{ad-bc} \\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix",
+                description: "Menghitung matriks balikan (invers) dari sebuah matriks 2x2. Invers tidak ada jika determinan (ad-bc) adalah nol.", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "a", defaultValue: 4 }, { symbol: "b", name: "b", defaultValue: 7 }, { symbol: "c", name: "c", defaultValue: 2 }, { symbol: "d", name: "d", defaultValue: 6 } ],
+                calculate: function(v) { const det = v.a*v.d - v.b*v.c; if(det === 0) return "Determinan nol, tidak ada invers."; return `Invers = (1/${det}) * [[${v.d}, ${-v.b}], [${-v.c}, ${v.a}]]`; },
+                examples: [ { problem: "Cari invers dari matriks A = [[4, 7], [2, 6]].", solution: "det(A)=10. \\[A^{-1} = \\frac{1}{10} \\begin{pmatrix} 6 & -7 \\\\ -2 & 4 \\end{pmatrix} = \\begin{pmatrix} 0.6 & -0.7 \\\\ -0.2 & 0.4 \\end{pmatrix}\\]" } ]
+            },
+            {
+                id: 88, title: "Aturan Pembagian Turunan", latex: "\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}",
+                description: "Aturan untuk mencari turunan dari pembagian dua fungsi, u(x) dan v(x).", level: "SMA", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Cari turunan f(x) = x / (x+1).", solution: "u=x, u'=1. v=x+1, v'=1. \\[f'(x) = \\frac{1(x+1) - x(1)}{(x+1)^2} = \\frac{1}{(x+1)^2}\\]" } ]
+            },
+            {
+                id: 89, title: "Integral Tak Tentu (Konstanta)", latex: "\\int k \\,dx = kx + C",
+                description: "Integral dari sebuah konstanta (k) adalah konstanta tersebut dikalikan x, ditambah konstanta integrasi (C).", level: "SMA", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung integral dari 5.", solution: "\\[\\int 5 \\,dx = 5x + C\\]" } ]
+            },
+            {
+                id: 90, title: "Simpangan Baku (Sampel)", latex: "s = \\sqrt{\\frac{\\sum (x_i - \\bar{x})^2}{n-1}}",
+                description: "Ukuran sebaran data dari rata-rata sampel (x̄). Menggunakan (n-1) sebagai pembagi.", level: "SMA", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Data sampel: 2, 4, 6, 8. Rata-rata x̄=5.", solution: "\\[s = \\sqrt{\\frac{(2-5)^2+(4-5)^2+(6-5)^2+(8-5)^2}{4-1}} = \\sqrt{\\frac{20}{3}} \\approx 2.58\\]" } ]
+            },
+            {
+                id: 91, title: "Persamaan Elips (Pusat 0,0)", latex: "\\frac{x^2}{a^2} + \\frac{y^2}{b^2 = 1",
+                description: "Persamaan standar elips horizontal dengan pusat di (0,0), sumbu mayor 2a, dan sumbu minor 2b.", level: "SMA", topics: ["Geometri"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tentukan panjang sumbu mayor dan minor dari elips x²/25 + y²/16 = 1.", solution: "a²=25 -> a=5. b²=16 -> b=4. Sumbu mayor = 2a = 10. Sumbu minor = 2b = 8." } ]
+            },
+            {
+                id: 92, title: "Proyeksi Skalar Ortogonal", latex: "|\\vec{c}| = \\frac{\\vec{a} \\cdot \\vec{b}}{|\\vec{b}|}",
+                description: "Menghitung panjang proyeksi (bayangan) vektor a pada arah vektor b.", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "a=(2,3), b=(4,0). Hitung panjang proyeksi a pada b.", solution: "a·b = (2)(4)+(3)(0)=8. |b|=√(4²+0²)=4. \\[|\\vec{c}| = \\frac{8}{4} = 2\\]" } ]
+            },
+            {
+                id: 93, title: "Suku Tengah Barisan Aritmetika", latex: "U_t = \\frac{a + U_n}{2}",
+                description: "Mencari suku tengah (U_t) dari barisan aritmetika dengan jumlah suku ganjil (n). 'a' adalah suku pertama dan U_n adalah suku terakhir.", level: "SMP", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Suku Pertama (a)", defaultValue: 5 }, { symbol: "Un", name: "Suku Terakhir (Un)", defaultValue: 25 } ],
+                calculate: function(v) { return `Suku Tengah = ${(v.a + v.Un)/2}`},
+                examples: [ { problem: "Suku tengah dari barisan 5, 9, 13, 17, 21, 25?", solution: "Barisan ini memiliki 6 suku (genap), jadi tidak ada satu suku tengah. Namun, jika barisannya 5, ..., 25 dengan 5 suku, maka \\[U_t = \\frac{5+25}{2} = 15\\]" } ]
+            },
+            {
+                id: 94, title: "Jangkauan (Range)", latex: "R = x_{max} - x_{min}",
+                description: "Selisih antara nilai terbesar (maksimum) dan nilai terkecil (minimum) dalam suatu set data.", level: "SMP", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tentukan jangkauan dari data: 10, 2, 8, 5, 12.", solution: "Data terurut: 2, 5, 8, 10, 12. \\[R = 12 - 2 = 10\\]" } ]
+            },
+            {
+                id: 95, title: "Jangkauan Antarkuartil", latex: "IQR = Q_3 - Q_1",
+                description: "Selisih antara kuartil atas (Q₃) dan kuartil bawah (Q₁). Mengukur sebaran 50% data di tengah.", level: "SMA", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Data: 2, 5, 7, 8, 10, 12, 15. Q₁=5, Q₃=12. Berapa IQR?", solution: "\\[IQR = 12 - 5 = 7\\]" } ]
+            },
+            {
+                id: 96, title: "Permutasi Siklis", latex: "P_{siklis} = (n-1)!",
+                description: "Menghitung banyaknya cara menyusun n objek yang berbeda dalam suatu lingkaran.", level: "SMA", topics: ["Aljabar", "Statistika"],
+                variables: [ { symbol: "n", name: "Jumlah objek (n)", defaultValue: 4 } ],
+                calculate: function(v) { let res = 1; for(let i=1; i<v.n; i++) res *= i; return `Jumlah cara = ${res}`},
+                examples: [ { problem: "4 orang duduk mengelilingi meja bundar. Berapa banyak susunan yang mungkin?", solution: "\\[P = (4-1)! = 3! = 6 \\text{ cara}\\]" } ]
+            },
+            {
+                id: 97, title: "Panjang Busur Lingkaran", latex: "L_{busur} = \\frac{\\theta}{360°} \\times 2\\pi r",
+                description: "Menghitung panjang busur juring lingkaran dengan sudut pusat θ (derajat) dan jari-jari r.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "theta", name: "Sudut Pusat (°)", defaultValue: 90 }, { symbol: "r", name: "Jari-jari (r)", defaultValue: 14 } ],
+                calculate: function(v) { return `Panjang Busur = ${(v.theta/360 * 2 * Math.PI * v.r).toFixed(2)}`},
+                examples: [ { problem: "Panjang busur lingkaran r=14cm dengan sudut 90°?", solution: "\\[L = \\frac{90}{360} \\times 2 \\times \\frac{22}{7} \\times 14 = 22 \\text{ cm}\\]" } ]
+            },
+            {
+                id: 98, title: "Luas Juring Lingkaran", latex: "L_{juring} = \\frac{\\theta}{360°} \\times \\pi r^2",
+                description: "Menghitung luas juring (sektor) lingkaran dengan sudut pusat θ (derajat) dan jari-jari r.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "theta", name: "Sudut Pusat (°)", defaultValue: 60 }, { symbol: "r", name: "Jari-jari (r)", defaultValue: 21 } ],
+                calculate: function(v) { return `Luas Juring = ${(v.theta/360 * Math.PI * v.r**2).toFixed(2)}`},
+                examples: [ { problem: "Luas juring lingkaran r=21cm dengan sudut 60°?", solution: "\\[L = \\frac{60}{360} \\times \\frac{22}{7} \\times 21^2 = 231 \\text{ cm}^2\\]" } ]
+            },
+            {
+                id: 99, title: "Aturan Cramer (2 Variabel)", latex: "x = \\frac{D_x}{D}, y = \\frac{D_y}{D}",
+                description: "Menyelesaikan sistem persamaan linear dua variabel menggunakan determinan. D adalah determinan koefisien, Dx dan Dy adalah determinan yang dimodifikasi.", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sistem: x+2y=5, 3x-y=1.", solution: "D = (1)(-1)-(2)(3)=-7. Dx=(5)(-1)-(2)(1)=-7. Dy=(1)(1)-(5)(3)=-14. \\[x=\\frac{-7}{-7}=1, y=\\frac{-14}{-7}=2\\]" } ]
+            },
+            {
+                id: 100, title: "Sifat Eksponen (Perkalian)", latex: "a^m \\times a^n = a^{m+n}",
+                description: "Jika basis sama, perkalian bilangan berpangkat sama dengan menjumlahkan pangkatnya.", level: "SMP", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sederhanakan 2³ × 2⁵.", solution: "\\[2^3 \\times 2^5 = 2^{3+5} = 2^8 = 256\\]" } ]
+            },
+            {
+                id: 101, title: "Sifat Eksponen (Pembagian)", latex: "a^m / a^n = a^{m-n}",
+                description: "Jika basis sama, pembagian bilangan berpangkat sama dengan mengurangkan pangkatnya.", level: "SMP", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sederhanakan 3⁷ / 3⁴.", solution: "\\[3^7 / 3^4 = 3^{7-4} = 3^3 = 27\\]" } ]
+            },
+            {
+                id: 102, title: "Sifat Eksponen (Pangkat dari Pangkat)", latex: "(a^m)^n = a^{m \\times n}",
+                description: "Bilangan berpangkat yang dipangkatkan lagi sama dengan mengalikan kedua pangkatnya.", level: "SMP", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Sederhanakan (5²)³.", solution: "\\[(5^2)^3 = 5^{2 \\times 3} = 5^6 = 15625\\]" } ]
+            },
+            {
+                id: 103, title: "Volume Limas", latex: "V = \\frac{1}{3} \\times L_{alas} \\times t",
+                description: "Menghitung volume limas (piramida) dengan luas alas (L_alas) dan tinggi limas (t).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "La", name: "Luas Alas", defaultValue: 36 }, { symbol: "t", name: "Tinggi Limas", defaultValue: 10 } ],
+                calculate: function(v) { return `Volume = ${(1/3 * v.La * v.t).toFixed(2)}`},
+                examples: [ { problem: "Limas alas persegi sisi 6cm, tinggi 10cm. Volumenya?", solution: "L_alas = 6x6=36. \\[V = \\frac{1}{3} \\times 36 \\times 10 = 120 \\text{ cm}^3\\]" } ]
+            },
+            {
+                id: 104, title: "Volume Prisma", latex: "V = L_{alas} \\times t",
+                description: "Menghitung volume prisma dengan luas alas (L_alas) dan tinggi prisma (t).", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "La", name: "Luas Alas", defaultValue: 20 }, { symbol: "t", name: "Tinggi Prisma", defaultValue: 15 } ],
+                calculate: function(v) { return `Volume = ${v.La * v.t}`},
+                examples: [ { problem: "Prisma alas segitiga luas 20cm², tinggi 15cm. Volumenya?", solution: "\\[V = 20 \\times 15 = 300 \\text{ cm}^3\\]" } ]
+            },
+            {
+                id: 105, title: "Teorema Sisa", latex: "f(x) = p(x) \\cdot h(x) + s(x)",
+                description: "Jika suku banyak f(x) dibagi oleh p(x), maka akan menghasilkan hasil bagi h(x) dan sisa s(x). Jika f(x) dibagi (x-k), sisanya adalah f(k).", level: "SMA", topics: ["Aljabar"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tentukan sisa pembagian f(x) = x²+3x+5 oleh (x-1).", solution: "Sisa = f(1). \\[S = (1)^2 + 3(1) + 5 = 9\\]" } ]
+            },
+            {
+                id: 106, title: "Perbandingan Senilai", latex: "\\frac{a_1}{b_1} = \\frac{a_2}{b_2}",
+                description: "Hubungan antara dua variabel di mana jika satu variabel bertambah, variabel lainnya juga bertambah dengan perbandingan yang sama.", level: "SMP", topics: ["Aljabar", "Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "3 buku harganya Rp 6000. Berapa harga 5 buku?", solution: "\\[\\frac{3}{6000} = \\frac{5}{x} \\implies 3x = 30000 \\implies x = 10000\\] Harganya Rp 10.000." } ]
+            },
+            {
+                id: 107, title: "Perbandingan Berbalik Nilai", latex: "a_1 \\cdot b_1 = a_2 \\cdot b_2",
+                description: "Hubungan antara dua variabel di mana jika satu variabel bertambah, variabel lainnya berkurang dengan perbandingan yang sama.", level: "SMP", topics: ["Aljabar", "Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Pekerjaan selesai oleh 10 orang dalam 6 hari. Jika dikerjakan 15 orang, berapa hari selesai?", solution: "\\[10 \\times 6 = 15 \\times x \\implies 60 = 15x \\implies x = 4\\] Selesai dalam 4 hari." } ]
+            },
+            // --- RUMUS BARU YANG DITAMBAHKAN ---
+            {
+                id: 108, title: "Persamaan Garis Singgung Lingkaran", latex: "y - y_1 = m(x - x_1)",
+                description: "Persamaan garis singgung pada lingkaran dengan gradien m dan melalui titik (x₁, y₁).", level: "SMA", topics: ["Geometri"],
+                variables: [ { symbol: "x1", name: "x₁", defaultValue: 2 }, { symbol: "y1", name: "y₁", defaultValue: 3 }, { symbol: "m", name: "Gradien (m)", defaultValue: 1 } ],
+                calculate: function(v) { return `Persamaan: y - ${v.y1} = ${v.m}(x - ${v.x1})`; },
+                examples: [ { problem: "Tentukan persamaan garis singgung dengan gradien 2 di titik (1, 3)", solution: "y - 3 = 2(x - 1) → y = 2x + 1" } ]
+            },
+            {
+                id: 109, title: "Luas Permukaan Kerucut", latex: "L = \\pi r (r + s)",
+                description: "Menghitung luas permukaan kerucut dengan jari-jari r dan garis pelukis s.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "r", name: "Jari-jari (r)", defaultValue: 7 }, { symbol: "s", name: "Garis pelukis (s)", defaultValue: 10 } ],
+                calculate: function(v) { return `Luas Permukaan = ${(Math.PI * v.r * (v.r + v.s)).toFixed(2)}`; },
+                examples: [ { problem: "Kerucut dengan jari-jari 7 cm dan garis pelukis 10 cm. Luas permukaannya?", solution: "L = π × 7 × (7 + 10) ≈ 373.85 cm²" } ]
+            },
+            {
+                id: 110, title: "Volume Prisma Segitiga", latex: "V = \\frac{1}{2} a t l",
+                description: "Menghitung volume prisma segitiga dengan alas a, tinggi segitiga t, dan panjang prisma l.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "a", name: "Alas segitiga (a)", defaultValue: 5 }, { symbol: "t", name: "Tinggi segitiga (t)", defaultValue: 4 }, { symbol: "l", name: "Panjang prisma (l)", defaultValue: 10 } ],
+                calculate: function(v) { return `Volume = ${(0.5 * v.a * v.t * v.l).toFixed(2)}`; },
+                examples: [ { problem: "Prisma segitiga dengan alas 5 cm, tinggi 4 cm, dan panjang 10 cm. Volumenya?", solution: "V = ½ × 5 × 4 × 10 = 100 cm³" } ]
+            },
+            {
+                id: 111, title: "Teorema Binomial", latex: "(a + b)^n = \\sum_{k=0}^{n} \\binom{n}{k} a^{n-k} b^k",
+                description: "Menguraikan bentuk binomial yang dipangkatkan n.", level: "SMA", topics: ["Aljabar"],
+                variables: [ { symbol: "a", name: "Nilai a", defaultValue: 2 }, { symbol: "b", name: "Nilai b", defaultValue: 3 }, { symbol: "n", name: "Pangkat (n)", defaultValue: 4 } ],
+                calculate: function(v) {
+                    let result = 0;
+                    for (let k = 0; k <= v.n; k++) {
+                        const coefficient = math.combinations(v.n, k);
+                        result += coefficient * Math.pow(v.a, v.n - k) * Math.pow(v.b, k);
+                    }
+                    return `Hasil: ${result}`;
+                },
+                examples: [ { problem: "Uraikan (x + y)³", solution: "(x + y)³ = x³ + 3x²y + 3xy² + y³" } ]
+            },
+            {
+                id: 112, title: "Persamaan Logistik", latex: "P(t) = \\frac{K}{1 + \\frac{K-P_0}{P_0} e^{-rt}}",
+                description: "Model pertumbuhan logistik dengan kapasitas maksimum K.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [ { symbol: "K", name: "Kapasitas maksimum (K)", defaultValue: 1000 }, { symbol: "P0", name: "Populasi awal (P₀)", defaultValue: 100 }, { symbol: "r", name: "Laju pertumbuhan (r)", defaultValue: 0.1 }, { symbol: "t", name: "Waktu (t)", defaultValue: 10 } ],
+                calculate: function(v) {
+                    const exponent = -v.r * v.t;
+                    const denominator = 1 + ((v.K - v.P0) / v.P0) * Math.exp(exponent);
+                    return `Populasi pada waktu t = ${v.t}: ${(v.K / denominator).toFixed(2)}`;
+                },
+                examples: [ { problem: "Model pertumbuhan bakteri dengan K=1000, P₀=100, r=0.2. Hitung populasi saat t=5", solution: "P(5) = 1000 / (1 + 9 * e^(-1)) ≈ 1000 / (1 + 9*0.3679) ≈ 1000 / 4.311 ≈ 232" } ]
+            },
+            {
+                id: 113, title: "Transformasi Fourier", latex: "F(\\omega) = \\int_{-\\infty}^{\\infty} f(t) e^{-i\\omega t} dt",
+                description: "Mengubah fungsi dari domain waktu ke domain frekuensi.", level: "Advanced", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi dari Transformasi Fourier?", solution: "Transformasi Fourier digunakan dalam pemrosesan sinyal, analisis getaran, dan banyak bidang teknik lainnya untuk menganalisis komponen frekuensi dari suatu sinyal." } ]
+            },
+            {
+                id: 114, title: "Persamaan Navier-Stokes", latex: "\\rho \\left( \\frac{\\partial \\mathbf{v}}{\\partial t} + \\mathbf{v} \\cdot \\nabla \\mathbf{v} \\right) = -\\nabla p + \\mu \\nabla^2 \\mathbf{v} + \\mathbf{f}",
+                description: "Persamaan diferensial parsial yang menggambarkan pergerakan fluida.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang digambarkan oleh persamaan Navier-Stokes?", solution: "Persamaan ini menggambarkan bagaimana kecepatan, tekanan, suhu, dan densitas fluida saling berhubungan dalam aliran fluida." } ]
+            },
+            {
+                id: 115, title: "Persamaan Maxwell", latex: "\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}",
+                description: "Salah satu dari empat persamaan Maxwell yang menjadi dasar elektrodinamika klasik.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa pentingnya persamaan Maxwell?", solution: "Persamaan Maxwell menggabungkan listrik, magnet, dan optik menjadi teori yang koheren dan memprediksi keberadaan gelombang elektromagnetik." } ]
+            },
+            {
+                id: 116, title: "Teorema Bayes", latex: "P(A|B) = \\frac{P(B|A) P(A)}{P(B)}",
+                description: "Menghitung probabilitas bersyarat suatu kejadian berdasarkan informasi tambahan.", level: "SMA", topics: ["Statistika"],
+                variables: [ { symbol: "PA", name: "P(A)", defaultValue: 0.3 }, { symbol: "PBgivenA", name: "P(B|A)", defaultValue: 0.8 }, { symbol: "PB", name: "P(B)", defaultValue: 0.5 } ],
+                calculate: function(v) { return `P(A|B) = ${(v.PBgivenA * v.PA / v.PB).toFixed(3)}`; },
+                examples: [ { problem: "Jika 1% populasi sakit, dan tes 95% akurat untuk sakit dan 90% akurat untuk sehat, berapa probabilitas seseorang benar-benar sakit jika tes positif?", solution: "P(Sakit|Positif) = (0.95×0.01)/(0.95×0.01 + 0.10×0.99) ≈ 0.087" } ]
+            },
+            {
+                id: 117, title: "Distribusi Normal", latex: "f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-\\frac{1}{2} \\left( \\frac{x-\\mu}{\\sigma} \\right)^2}",
+                description: "Distribusi probabilitas kontinu yang penting dalam statistika.", level: "SMA", topics: ["Statistika"],
+                variables: [ { symbol: "mu", name: "Rata-rata (μ)", defaultValue: 0 }, { symbol: "sigma", name: "Deviasi standar (σ)", defaultValue: 1 }, { symbol: "x", name: "Nilai x", defaultValue: 0 } ],
+                calculate: function(v) {
+                    const exponent = -0.5 * Math.pow((v.x - v.mu) / v.sigma, 2);
+                    return `f(${v.x}) = ${(1/(v.sigma * Math.sqrt(2 * Math.PI)) * Math.exp(exponent)).toFixed(4)}`;
+                },
+                examples: [ { problem: "Hitung nilai PDF distribusi normal standar pada x=0", solution: "f(0) = 1/√(2π) ≈ 0.3989" } ]
+            },
+            {
+                id: 118, title: "Transformasi Laplace", latex: "F(s) = \\int_0^\\infty f(t) e^{-st} dt",
+                description: "Mengubah fungsi dari domain waktu ke domain frekuensi kompleks.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa kegunaan Transformasi Laplace?", solution: "Transformasi Laplace digunakan untuk menyelesaikan persamaan diferensial dan menganalisis sistem linier time-invariant (LTI)." } ]
+            },
+            {
+                id: 119, title: "Persamaan Gelombang", latex: "\\frac{\\partial^2 u}{\\partial t^2} = c^2 \\nabla^2 u",
+                description: "Persamaan diferensial parsial yang menggambarkan perambatan gelombang.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang direpresentasikan oleh c dalam persamaan gelombang?", solution: "c adalah kecepatan perambatan gelombang dalam medium tersebut." } ]
+            },
+            {
+                id: 120, title: "Persamaan Panas", latex: "\\frac{\\partial u}{\\partial t} = \\alpha \\nabla^2 u",
+                description: "Persamaan diferensial parsial yang menggambarkan distribusi panas dalam suatu daerah tertentu.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang direpresentasikan oleh α dalam persamaan panas?", solution: "α adalah difusivitas termal, yang mengukur seberapa cepat panas menyebar melalui material." } ]
+            },
+            {
+                id: 121, title: "Persamaan Kontinuitas", latex: "\\frac{\\partial \\rho}{\\partial t} + \\nabla \\cdot (\\rho \\mathbf{v}) = 0",
+                description: "Menyatakan kekekalan massa dalam mekanika fluida.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang diwakili oleh persamaan kontinuitas?", solution: "Persamaan ini menyatakan bahwa laju perubahan massa dalam volume tertentu sama dengan net flux massa melintasi batas volume." } ]
+            },
+            {
+                id: 122, title: "Persamaan Bernoulli", latex: "P + \\frac{1}{2} \\rho v^2 + \\rho gh = \\text{konstan}",
+                description: "Menghubungkan tekanan, kecepatan, dan ketinggian dalam aliran fluida ideal.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "P", name: "Tekanan (Pa)", defaultValue: 101325 }, { symbol: "rho", name: "Densitas (kg/m³)", defaultValue: 1000 }, { symbol: "v", name: "Kecepatan (m/s)", defaultValue: 5 }, { symbol: "h", name: "Ketinggian (m)", defaultValue: 10 } ],
+                calculate: function(v) { return `Nilai konstan = ${(v.P + 0.5 * v.rho * Math.pow(v.v, 2) + v.rho * 9.8 * v.h).toFixed(2)}`; },
+                examples: [ { problem: "Air mengalir dengan kecepatan 2 m/s pada ketinggian 5 m. Jika tekanan 100 kPa, hitung nilai konstan Bernoulli.", solution: "P + ½ρv² + ρgh = 100000 + ½×1000×4 + 1000×9.8×5 = 100000 + 2000 + 49000 = 151000 Pa" } ]
+            },
+            {
+                id: 123, title: "Hukum Hooke", latex: "F = -kx",
+                description: "Gaya yang diperlukan untuk memperpanjang atau memperpendek pegas sebanding dengan jarak perpanjangan atau perpendekannya.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "k", name: "Konstanta pegas (N/m)", defaultValue: 50 }, { symbol: "x", name: "Perubahan panjang (m)", defaultValue: 0.1 } ],
+                calculate: function(v) { return `Gaya (F) = ${(-v.k * v.x).toFixed(2)} N`; },
+                examples: [ { problem: "Pegas dengan konstanta 100 N/m diregangkan 0.2 m. Berapa gaya yang dikerjakan pegas?", solution: "F = -100 × 0.2 = -20 N (tanda negatif menunjukkan arah gaya berlawanan dengan arah peregangan)" } ]
+            },
+            {
+                id: 124, title: "Hukum Kekekalan Energi", latex: "E_{awal} = E_{akhir}",
+                description: "Energi tidak dapat diciptakan atau dimusnahkan, hanya dapat berubah bentuk dari satu bentuk ke bentuk lainnya.", level: "SMA", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Bola jatuh dari ketinggian 10 m. Berapa kecepatannya saat menyentuh tanah?", solution: "Energi potensial awal = Energi kinetik akhir. mgh = ½mv² → v = √(2gh) = √(2×9.8×10) ≈ 14 m/s" } ]
+            },
+            {
+                id: 125, title: "Hukum Kekekalan Momentum", latex: "m_1 v_1 + m_2 v_2 = m_1 v_1' + m_2 v_2'",
+                description: "Total momentum sistem tertutup adalah konstan jika tidak ada gaya eksternal yang bekerja.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "m1", name: "Massa 1 (kg)", defaultValue: 2 }, { symbol: "v1", name: "Kecepatan 1 (m/s)", defaultValue: 3 }, { symbol: "m2", name: "Massa 2 (kg)", defaultValue: 3 }, { symbol: "v2", name: "Kecepatan 2 (m/s)", defaultValue: -2 } ],
+                calculate: function(v) { return `Total momentum = ${(v.m1 * v.v1 + v.m2 * v.v2).toFixed(2)} kg·m/s`; },
+                examples: [ { problem: "Dua benda bergerak saling mendekat. m₁=2kg, v₁=3m/s; m₂=3kg, v₂=-2m/s. Hitung total momentum.", solution: "P = (2×3) + (3×-2) = 6 - 6 = 0 kg·m/s" } ]
+            },
+            {
+                id: 126, title: "Usaha", latex: "W = F \\cdot d \\cdot \\cos\\theta",
+                description: "Usaha yang dilakukan oleh gaya konstan F yang bekerja pada benda yang bergerak sejauh d.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "F", name: "Gaya (N)", defaultValue: 10 }, { symbol: "d", name: "Jarak (m)", defaultValue: 5 }, { symbol: "theta", name: "Sudut (°)", defaultValue: 0 } ],
+                calculate: function(v) { 
+                    const rad = v.theta * Math.PI / 180;
+                    return `Usaha (W) = ${(v.F * v.d * Math.cos(rad)).toFixed(2)} Joule`;
+                },
+                examples: [ { problem: "Gaya 20 N menarik kotak sejauh 5 m sepanjang lantai. Sudut 30°. Berapa usaha yang dilakukan?", solution: "W = 20 × 5 × cos(30°) = 100 × 0.866 = 86.6 J" } ]
+            },
+            {
+                id: 127, title: "Daya", latex: "P = \\frac{W}{t}",
+                description: "Laju melakukan usaha atau mengubah energi.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "W", name: "Usaha (J)", defaultValue: 1000 }, { symbol: "t", name: "Waktu (s)", defaultValue: 10 } ],
+                calculate: function(v) { return `Daya (P) = ${(v.W / v.t).toFixed(2)} Watt`; },
+                examples: [ { problem: "Motor melakukan usaha 5000 J dalam 5 detik. Berapa dayanya?", solution: "P = 5000 / 5 = 1000 Watt" } ]
+            },
+            {
+                id: 128, title: "Efisiensi", latex: "\\eta = \\frac{Output}{Input} \\times 100\\%",
+                description: "Perbandingan antara keluaran yang berguna dengan masukan total.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "output", name: "Keluaran berguna", defaultValue: 80 }, { symbol: "input", name: "Masukan total", defaultValue: 100 } ],
+                calculate: function(v) { return `Efisiensi = ${((v.output / v.input) * 100).toFixed(2)}%`; },
+                examples: [ { problem: "Mesin menerima 200 J energi tetapi hanya menghasilkan 150 J energi berguna. Berapa efisiensinya?", solution: "η = (150/200) × 100% = 75%" } ]
+            },
+            {
+                id: 129, title: "Hukum Pascal", latex: "\\frac{F_1}{A_1} = \\frac{F_2}{A_2}",
+                description: "Tekanan yang diberikan pada fluida dalam ruang tertutup akan diteruskan sama besar ke segala arah.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "F1", name: "Gaya 1 (N)", defaultValue: 100 }, { symbol: "A1", name: "Luas 1 (m²)", defaultValue: 0.01 }, { symbol: "A2", name: "Luas 2 (m²)", defaultValue: 0.1 } ],
+                calculate: function(v) { return `Gaya 2 (F₂) = ${((v.F1 / v.A1) * v.A2).toFixed(2)} N`; },
+                examples: [ { problem: "Dongkrak hidrolik: A₁=2cm², A₂=20cm². Jika F₁=50N, berapa F₂?", solution: "F₂ = (A₂/A₁) × F₁ = (20/2) × 50 = 500 N" } ]
+            },
+            {
+                id: 130, title: "Hukum Archimedes", latex: "F_a = \\rho g V",
+                description: "Gaya apung yang bekerja pada benda yang dicelupkan ke dalam fluida sama dengan berat fluida yang dipindahkan.", level: "SMA", topics: ["Fisika"],
+                variables: [ { symbol: "rho", name: "Densitas fluida (kg/m³)", defaultValue: 1000 }, { symbol: "V", name: "Volume terendam (m³)", defaultValue: 0.005 } ],
+                calculate: function(v) { return `Gaya apung = ${(v.rho * 9.8 * v.V).toFixed(2)} N`; },
+                examples: [ { problem: "Benda volume 0.01 m³ tercelup seluruhnya dalam air (ρ=1000 kg/m³). Berapa gaya apung?", solution: "Fₐ = 1000 × 9.8 × 0.01 = 98 N" } ]
+            },
+            {
+                id: 131, title: "Titik Berat Segitiga", latex: "T = \\left( \\frac{x_1+x_2+x_3}{3}, \\frac{y_1+y_2+y_3}{3} \\right)",
+                description: "Koordinat titik berat segitiga dengan titik sudut (x₁,y₁), (x₂,y₂), dan (x₃,y₃).", level: "SMA", topics: ["Geometri"],
+                variables: [ { symbol: "x1", name: "x₁", defaultValue: 0 }, { symbol: "y1", name: "y₁", defaultValue: 0 }, { symbol: "x2", name: "x₂", defaultValue: 4 }, { symbol: "y2", name: "y₂", defaultValue: 0 }, { symbol: "x3", name: "x₃", defaultValue: 2 }, { symbol: "y3", name: "y₃", defaultValue: 3 } ],
+                calculate: function(v) { return `Titik berat = (${((v.x1+v.x2+v.x3)/3).toFixed(2)}, ${((v.y1+v.y2+v.y3)/3).toFixed(2)})`; },
+                examples: [ { problem: "Tentukan titik berat segitiga dengan titik sudut (0,0), (4,0), (2,3).", solution: "T = ((0+4+2)/3, (0+0+3)/3) = (2, 1)" } ]
+            },
+            {
+                id: 132, title: "Luas Permukaan Limas", latex: "L = L_{alas} + L_{selimut}",
+                description: "Menghitung luas permukaan limas sebagai jumlah luas alas dan luas selimut.", level: "SMP", topics: ["Geometri"],
+                variables: [ { symbol: "La", name: "Luas alas", defaultValue: 25 }, { symbol: "Ls", name: "Luas selimut", defaultValue: 60 } ],
+                calculate: function(v) { return `Luas Permukaan = ${v.La + v.Ls}`; },
+                examples: [ { problem: "Limas persegi dengan luas alas 16 cm² dan luas selimut 80 cm². Luas permukaannya?", solution: "L = 16 + 80 = 96 cm²" } ]
+            },
+            {
+                id: 133, title: "Volume Benda Putar (Cakram)", latex: "V = \\pi \\int_a^b [f(x)]^2 dx",
+                description: "Menghitung volume benda yang terbentuk dari memutar kurva y=f(x) sekitar sumbu x dari x=a sampai x=b.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung volume benda putar dari y=√x diputar sekitar sumbu x dari x=0 sampai x=4.", solution: "V = π∫₀⁴ (√x)² dx = π∫₀⁴ x dx = π[½x²]₀⁴ = π(8-0) = 8π" } ]
+            },
+            {
+                id: 134, title: "Luas Permukaan Benda Putar", latex: "A = 2\\pi \\int_a^b f(x) \\sqrt{1 + [f'(x)]^2} dx",
+                description: "Menghitung luas permukaan benda yang terbentuk dari memutar kurva y=f(x) sekitar sumbu x.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Hitung luas permukaan benda putar dari y=x² diputar sekitar sumbu x dari x=0 sampai x=1.", solution: "f'(x)=2x, A=2π∫₀¹ x²√(1+4x²) dx. Hasilnya memerlukan integrasi yang lebih kompleks." } ]
+            },
+            {
+                id: 135, title: "Teorema Green", latex: "\\oint_C (L dx + M dy) = \\iint_D \\left( \\frac{\\partial M}{\\partial x} - \\frac{\\partial L}{\\partial y} \\right) dA",
+                description: "Menghubungkan integral garis sekitar kurva tertutup C dengan integral ganda pada daerah D yang dibatasi oleh C.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Teorema Green?", solution: "Teorema Green digunakan untuk menyederhanakan perhitungan integral garis dengan mengubahnya menjadi integral ganda, atau sebaliknya." } ]
+            },
+            {
+                id: 136, title: "Teorema Stokes", latex: "\\oint_C \\mathbf{F} \\cdot d\\mathbf{r} = \\iint_S (\\nabla \\times \\mathbf{F}) \\cdot d\\mathbf{S}",
+                description: "Generalisasi Teorema Green untuk permukaan dalam ruang tiga dimensi.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa hubungan Teorema Stokes dengan Teorema Green?", solution: "Teorema Green adalah kasus khusus dari Teorema Stokes di mana permukaannya terletak pada bidang xy." } ]
+            },
+            {
+                id: 137, title: "Teorema Divergensi", latex: "\\oiint_S \\mathbf{F} \\cdot d\\mathbf{S} = \\iiint_V (\\nabla \\cdot \\mathbf{F}) dV",
+                description: "Menghubungkan flux medan vektor melalui permukaan tertutup dengan integral volume divergensi medan tersebut.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Teorema Divergensi?", solution: "Teorema Divergensi digunakan dalam elektromagnetisme, mekanika fluida, dan teori medan untuk mengubah integral permukaan menjadi integral volume." } ]
+            },
+            {
+                id: 138, title: "Persamaan Diferensial Linear Orde 1", latex: "\\frac{dy}{dx} + P(x)y = Q(x)",
+                description: "Persamaan diferensial linear orde pertama dengan koefisien variabel.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Selesaikan dy/dx + 2y = e^x", solution: "Faktor integrasi: e^(∫2dx)=e^(2x). Kalikan kedua sisi: e^(2x)dy/dx + 2e^(2x)y = e^(3x) → d/dx(ye^(2x)) = e^(3x) → ye^(2x)=∫e^(3x)dx=⅓e^(3x)+C → y=⅓e^x+Ce^(-2x)" } ]
+            },
+            {
+                id: 139, title: "Persamaan Diferensial Homogen", latex: "\\frac{dy}{dx} = f\\left(\\frac{y}{x}\\right)",
+                description: "Persamaan diferensial yang dapat diselesaikan dengan substitusi v=y/x.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Selesaikan dy/dx = (x²+y²)/xy", solution: "dy/dx = x/y + y/x. Substitusi v=y/x → y=vx, dy/dx=v+x dv/dx. Maka v+x dv/dx = 1/v + v → x dv/dx = 1/v → v dv = dx/x → ½v² = ln|x|+C → ½(y/x)² = ln|x|+C → y²=2x²(ln|x|+C)" } ]
+            },
+            {
+                id: 140, title: "Persamaan Diferensial Eksak", latex: "M(x,y)dx + N(x,y)dy = 0",
+                description: "Persamaan diferensial yang memenuhi ∂M/∂y = ∂N/∂x.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Selesaikan (2xy + y²)dx + (x² + 2xy)dy = 0", solution: "∂M/∂y=2x+2y, ∂N/∂x=2x+2y → eksak. ∫M dx = ∫(2xy+y²)dx = x²y+xy²+f(y). ∂/∂y(x²y+xy²+f(y)) = x²+2xy+f'(y) = N=x²+2xy → f'(y)=0 → f(y)=C. Solusi: x²y+xy²=C" } ]
+            },
+            {
+                id: 141, title: "Deret Fourier", latex: "f(x) = a_0 + \\sum_{n=1}^{\\infty} \\left( a_n \\cos\\frac{n\\pi x}{L} + b_n \\sin\\frac{n\\pi x}{L} \\right)",
+                description: "Merepresentasikan fungsi periodik sebagai jumlahan sinus dan kosinus.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tuliskan deret Fourier untuk fungsi gelombang persegi periodik.", solution: "Untuk gelombang persegi dengan periode 2π dan amplitudo 1: f(x)=4/π Σₙ sin((2n-1)x)/(2n-1) untuk n=1,2,3,..." } ]
+            },
+            {
+                id: 142, title: "Transformasi Fourier Diskrit", latex: "X_k = \\sum_{n=0}^{N-1} x_n e^{-i 2\\pi k n / N}",
+                description: "Versi diskrit dari Transformasi Fourier untuk data sampel.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Transformasi Fourier Diskrit?", solution: "DFT digunakan dalam pemrosesan sinyal digital, analisis citra, kompresi data, dan banyak aplikasi komputasi lainnya." } ]
+            },
+            {
+                id: 143, title: "Algoritma FFT", latex: "X_k = \\sum_{n=0}^{N-1} x_n e^{-i 2\\pi k n / N}",
+                description: "Fast Fourier Transform - algoritma efisien untuk menghitung Transformasi Fourier Diskrit.", level: "Perguruan Tinggi", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Mengapa FFT penting?", solution: "FFT mengurangi kompleksitas komputasi DFT dari O(N²) menjadi O(N log N), membuatnya praktis untuk aplikasi real-time." } ]
+            },
+            {
+                id: 144, title: "Persamaan Black-Scholes", latex: "\\frac{\\partial V}{\\partial t} + \\frac{1}{2} \\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} + rS \\frac{\\partial V}{\\partial S} - rV = 0",
+                description: "Persamaan diferensial parsial yang memodelkan harga opsi keuangan.", level: "Advanced", topics: ["Kalkulus"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi persamaan Black-Scholes?", solution: "Persamaan ini merevolusi keuangan kuantitatif dan menjadi dasar penentuan harga opsi, yang menghasilkan Hadiah Nobel bagi para penemunya." } ]
+            },
+            {
+                id: 145, title: "Persamaan Difusi", latex: "\\frac{\\partial u}{\\partial t} = D \\frac{\\partial^2 u}{\\partial x^2}",
+                description: "Menjelaskan bagaimana materi atau panas menyebar melalui medium.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang diwakili oleh D dalam persamaan difusi?", solution: "D adalah koefisien difusi, yang mengukur seberapa cepat materi atau panas menyebar melalui medium." } ]
+            },
+            {
+                id: 146, title: "Persamaan Poisson", latex: "\\nabla^2 \\phi = f",
+                description: "Persamaan diferensial parsial eliptik yang muncul dalam elektrostatika dan mekanika fluida.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa hubungan Persamaan Poisson dengan Persamaan Laplace?", solution: "Persamaan Laplace adalah kasus khusus dari Persamaan Poisson ketika f=0." } ]
+            },
+            {
+                id: 147, title: "Persamaan Laplace", latex: "\\nabla^2 \\phi = 0",
+                description: "Persamaan diferensial parsial yang muncul dalam banyak bidang fisika seperti elektrostatika dan mekanika fluida.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa solusi umum Persamaan Laplace dalam koordinat polar?", solution: "ϕ(r,θ) = A₀ + B₀lnr + Σₙ (Aₙrⁿ + Bₙr⁻ⁿ)(Cₙcos(nθ) + Dₙsin(nθ))" } ]
+            },
+            {
+                id: 148, title: "Persamaan Helmholtz", latex: "(\\nabla^2 + k^2) \\psi = 0",
+                description: "Persamaan diferensial parsial yang muncul dalam fisika gelombang.", level: "Perguruan Tinggi", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Dalam konteks apa Persamaan Helmholtz muncul?", solution: "Persamaan ini muncul ketika memisahkan variabel waktu dari persamaan gelombang, dan digunakan dalam akustika, elektromagnetisme, dan mekanika kuantum." } ]
+            },
+            {
+                id: 149, title: "Persamaan Korteweg-de Vries", latex: "\\frac{\\partial u}{\\partial t} + 6u \\frac{\\partial u}{\\partial x} + \\frac{\\partial^3 u}{\\partial x^3} = 0",
+                description: "Persamaan diferensial parsial nonlinier yang memodelkan gelombang soliter.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang khusus tentang Persamaan KdV?", solution: "Persamaan KdV adalah contoh awal dari sistem yang dapat terintegrasi secara tepat dan memiliki solusi soliton yang mempertahankan bentuknya setelah tumbukan." } ]
+            },
+            {
+                id: 150, title: "Persamaan Sine-Gordon", latex: "\\frac{\\partial^2 u}{\\partial t^2} - \\frac{\\partial^2 u}{\\partial x^2} + \\sin u = 0",
+                description: "Persamaan diferensial parsial nonlinier yang muncul dalam teori medan dan fisika materi terkondensasi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Sine-Gordon?", solution: "Persamaan ini digunakan untuk memodelkan dislokasi dalam kristal, sambungan Josephson dalam superkonduktivitas, dan dinamika medan skalar dalam teori medan kuantum." } ]
+            },
+            {
+                id: 151, title: "Persamaan Nonlinear Schrödinger", latex: "i\\frac{\\partial \\psi}{\\partial t} + \\frac{1}{2} \\frac{\\partial^2 \\psi}{\\partial x^2} + |\\psi|^2 \\psi = 0",
+                description: "Versi nonlinier dari persamaan Schrödinger yang muncul dalam berbagai konteks fisika.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Dalam konteks apa Persamaan Nonlinear Schrödinger digunakan?", solution: "Persamaan ini digunakan dalam optik nonlinier untuk memodelkan propagasi pulsa cahaya dalam serat optik, dan dalam fisika materi terkondensasi untuk mendeskripsikan kondensat Bose-Einstein." } ]
+            },
+            {
+                id: 152, title: "Persamaan Ginzburg-Landau", latex: "\\alpha \\psi + \\beta |\\psi|^2 \\psi + \\frac{1}{2m} \\left( -i\\hbar \\nabla - q\\mathbf{A} \\right)^2 \\psi = 0",
+                description: "Persamaan diferensial parsial yang mendeskripsikan superkonduktivitas.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Ginzburg-Landau?", solution: "Persamaan ini memberikan deskripsi fenomenologis superkonduktivitas dan memprediksi adanya kuantisasi flux, yang menghasilkan Hadiah Nobel bagi Vitaly Ginzburg." } ]
+            },
+            {
+                id: 153, title: "Persamaan Kardar-Parisi-Zhang", latex: "\\frac{\\partial h}{\\partial t} = \\nu \\nabla^2 h + \\frac{\\lambda}{2} (\\nabla h)^2 + \\eta",
+                description: "Persamaan diferensial stokastik nonlinier yang memodelkan pertumbuhan permukaan.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan KPZ?", solution: "Persamaan ini digunakan untuk memodelkan berbagai fenomena pertumbuhan seperti deposisi film tipis, pertumbuhan bakteri, dan bahkan pergerakan harga saham." } ]
+            },
+            {
+                id: 154, title: "Persamaan Thomas-Fermi", latex: "\\nabla^2 V = \\frac{4\\pi}{3} (2V)^{3/2}",
+                description: "Pendekatan statistik untuk mendeskripsikan atom berelektron banyak.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa kelebihan dan kekurangan model Thomas-Fermi?", solution: "Kelebihan: sederhana dan memberikan estimasi cepat untuk properti atom. Kekurangan: mengabaikan struktur kulit elektron dan tidak akurat untuk atom kecil." } ]
+            },
+            {
+                id: 155, title: "Persamaan Vlasov", latex: "\\frac{\\partial f}{\\partial t} + \\mathbf{v} \\cdot \\nabla f + \\frac{\\mathbf{F}}{m} \\cdot \\nabla_v f = 0",
+                description: "Persamaan evolusi untuk fungsi distribusi dalam plasma fisika dan dinamika bintang.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa perbedaan Persamaan Vlasov dengan Persamaan Boltzmann?", solution: "Persamaan Vlasov mengabaikan tumbukan (collisionless) dan cocok untuk sistem dengan skala waktu jauh lebih pendek dari waktu tumbukan, seperti plasma panas atau sistem gravitasi." } ]
+            },
+            {
+                id: 156, title: "Persamaan Fokker-Planck", latex: "\\frac{\\partial P}{\\partial t} = -\\frac{\\partial}{\\partial x} \\left[ \\mu(x,t) P \\right] + \\frac{\\partial^2}{\\partial x^2} \\left[ D(x,t) P \\right]",
+                description: "Menjelaskan evolusi waktu dari fungsi kepadatan probabilitas untuk proses stokastik.", level: "Advanced", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Fokker-Planck?", solution: "Persamaan ini digunakan dalam fisika statistik, kimia, biologi, dan keuangan untuk memodelkan sistem yang mengalami fluktuasi acak." } ]
+            },
+            {
+                id: 157, title: "Persamaan Langevin", latex: "m \\frac{d^2 x}{dt^2} = -\\lambda \\frac{dx}{dt} + F(t)",
+                description: "Persamaan stokastik yang mendeskripsikan dinamika partikel Brownian.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Langevin?", solution: "Persamaan ini memberikan landasan matematis untuk gerak Brownian dan menghubungkan fenomena mikroskopis dengan perilaku makroskopis." } ]
+            },
+            {
+                id: 158, title: "Persamaan Master", latex: "\\frac{d P_n}{dt} = \\sum_m \\left( T_{nm} P_m - T_{mn} P_n \\right)",
+                description: "Menjelaskan evolusi waktu dari probabilitas keadaan dalam proses stokastik Markovian.", level: "Advanced", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Master?", solution: "Persamaan ini digunakan dalam fisika statistik, kimia (untuk reaksi kimia), biologi (untuk dinamika populasi), dan teori antrian." } ]
+            },
+            {
+                id: 159, title: "Persamaan Liouville", latex: "\\frac{\\partial \\rho}{\\partial t} = -\\{ \\rho, H \\}",
+                description: "Mendeskripsikan evolusi fungsi distribusi dalam ruang fase mekanika klasik.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa hubungan Persamaan Liouville dengan mekanika kuantum?", solution: "Persamaan Liouville adalah analog klasik dari persamaan von Neumann dalam mekanika kuantum." } ]
+            },
+            {
+                id: 160, title: "Persamaan von Neumann", latex: "i\\hbar \\frac{\\partial \\rho}{\\partial t} = [H, \\rho]",
+                description: "Mendeskripsikan evolusi waktu operator densitas dalam mekanika kuantum.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan von Neumann?", solution: "Persamaan ini memberikan formulasi umum untuk evolusi sistem kuantum, termasuk sistem terbuka dan keadaan campuran." } ]
+            },
+            {
+                id: 161, title: "Persamaan Lindblad", latex: "\\frac{\\partial \\rho}{\\partial t} = -\\frac{i}{\\hbar} [H, \\rho] + \\sum_n \\left( L_n \\rho L_n^\\dagger - \\frac{1}{2} \\{ L_n^\\dagger L_n, \\rho \\} \\right)",
+                description: "Generalisasi Persamaan von Neumann untuk sistem kuantum terbuka dengan disipasi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Lindblad?", solution: "Persamaan ini digunakan untuk memodelkan decoherence dan disipasi dalam sistem kuantum, seperti dalam komputasi kuantum dan optika kuantum." } ]
+            },
+            {
+                id: 162, title: "Persamaan Gross-Pitaevskii", latex: "i\\hbar \\frac{\\partial \\psi}{\\partial t} = -\\frac{\\hbar^2}{2m} \\nabla^2 \\psi + V(\\mathbf{r}) \\psi + g |\\psi|^2 \\psi",
+                description: "Persamaan nonlinier yang mendeskripsikan dinamika kondensat Bose-Einstein.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Gross-Pitaevskii?", solution: "Persamaan ini memberikan deskripsi rata-rata medan yang akurat untuk kondensat Bose-Einstein dan memprediksi fenomena seperti vorteks kuantum dan soliton." } ]
+            },
+            {
+                id: 163, title: "Persamaan BCS", latex: "\\Delta(\\mathbf{k}) = -\\sum_{\\mathbf{k}'} V_{\\mathbf{k}\\mathbf{k}'} \\frac{\\Delta(\\mathbf{k}')}{2E(\\mathbf{k}')} \\tanh\\left( \\frac{E(\\mathbf{k}')}{2k_B T} \\right)",
+                description: "Teori mikroskopik superkonduktivitas yang menjelaskan pembentukan pasangan Cooper.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan BCS?", solution: "Teori BCS memberikan penjelasan mikroskopik pertama untuk superkonduktivitas konvensional dan menghasilkan Hadiah Nobel bagi Bardeen, Cooper, dan Schrieffer." } ]
+            },
+            {
+                id: 164, title: "Persamaan Gell-Mann-Low", latex: "H_{eff} = e^{iS} H e^{-iS}",
+                description: "Memberikan hubungan antara Hamiltonian telanjang dan Hamiltonian efektif dalam teori gangguan.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Gell-Mann-Low?", solution: "Persamaan ini digunakan dalam teori medan kuantum dan fisika materi terkondensasi untuk menurunkan Hamiltonian efektif dengan menghilangkan derajat kebebasan berenergi tinggi." } ]
+            },
+            {
+                id: 165, title: "Persamaan Bethe-Salpeter", latex: "\\Gamma = K + K G_0 \\Gamma",
+                description: "Persamaan integral untuk amplitudo hamburan dalam teori medan kuantum.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Bethe-Salpeter?", solution: "Persamaan ini memberikan deskripsi yang konsisten secara relativistik dari keadaan terikat dalam teori medan kuantum." } ]
+            },
+            {
+                id: 166, title: "Persamaan Dyson", latex: "G = G_0 + G_0 \\Sigma G",
+                description: "Persamaan integral untuk fungsi Green interaksi penuh dalam teori banyak-badan.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Dyson?", solution: "Persamaan ini adalah landasan untuk teori gangguan diagramatik dalam fisika banyak-badan dan teori medan kuantum." } ]
+            },
+            {
+                id: 167, title: "Persamaan Boltzmann", latex: "\\frac{\\partial f}{\\partial t} + \\mathbf{v} \\cdot \\nabla f + \\frac{\\mathbf{F}}{m} \\cdot \\nabla_v f = \\left( \\frac{\\partial f}{\\partial t} \\right)_{coll}",
+                description: "Mendeskripsikan evolusi fungsi distribusi partikel dalam gas atau plasma dengan memperhitungkan tumbukan.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Boltzmann?", solution: "Persamaan ini adalah dasar untuk kinetik gas dan transport theory, dan menghubungkan deskripsi mikroskopis dengan properti makroskopis seperti viskositas dan konduktivitas termal." } ]
+            },
+            {
+                id: 168, title: "Persamaan Vlasov-Maxwell", latex: "\\frac{\\partial f_s}{\\partial t} + \\mathbf{v} \\cdot \\nabla f_s + \\frac{q_s}{m_s} (\\mathbf{E} + \\mathbf{v} \\times \\mathbf{B}) \\cdot \\nabla_v f_s = 0",
+                description: "Sistem persamaan yang mendeskripsikan dinamika plasma dalam medan elektromagnetik.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Vlasov-Maxwell?", solution: "Persamaan ini digunakan dalam fisika plasma untuk mempelajari instabilitas, gelombang plasma, dan fenomena lain dalam plasma astrofisika dan plasma laboratorium." } ]
+            },
+            {
+                id: 169, title: "Persamaan MHD Ideal", latex: "\\rho \\left( \\frac{\\partial \\mathbf{v}}{\\partial t} + \\mathbf{v} \\cdot \\nabla \\mathbf{v} \\right) = -\\nabla p + \\mathbf{J} \\times \\mathbf{B}",
+                description: "Mendeskripsikan dinamika fluida konduktif dalam pendekatan magnetohidrodinamika (MHD).", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa asumsi utama MHD Ideal?", solution: "MHD Ideal mengasumsikan bahwa plasma memiliki konduktivitas tak terhingga, yang berarti medan magnet 'terbekukan' dalam fluida." } ]
+            },
+            {
+                id: 170, title: "Persamaan Grad-Shafranov", latex: "\\Delta^* \\psi = -\\mu_0 R^2 \\frac{dp}{d\\psi} - F \\frac{dF}{d\\psi}",
+                description: "Persamaan untuk keseimbangan magnetohidrodinamik aksisimetris dalam konfigurasi plasma.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Grad-Shafranov?", solution: "Persamaan ini adalah dasar untuk desain dan analisis device fusi nuklir tokamak yang menggunakan konfigurasi toroidal." } ]
+            },
+            {
+                id: 171, title: "Persamaan Boussinesq", latex: "\\frac{\\partial \\mathbf{v}}{\\partial t} + \\mathbf{v} \\cdot \\nabla \\mathbf{v} = -\\frac{1}{\\rho_0} \\nabla p + \\nu \\nabla^2 \\mathbf{v} + g \\alpha T \\mathbf{\\hat{z}}",
+                description: "Pendekatan untuk aliran konveksi yang mengabaikan kompresibilitas tetapi mempertahankan efek apung.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa asumsi utama Pendekatan Boussinesq?", solution: "Pendekatan ini mengasumsikan bahwa variasi densitas hanya signifikan dalam suku gaya apung, tetapi dapat diabaikan dalam suku lainnya." } ]
+            },
+            {
+                id: 172, title: "Persamaan Rayleigh-Bénard", latex: "\\frac{\\partial \\theta}{\\partial t} + \\mathbf{v} \\cdot \\nabla \\theta = \\kappa \\nabla^2 \\theta",
+                description: "Mendeskripsikan konveksi termal dalam lapisan fluida yang dipanaskan dari bawah.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi konveksi Rayleigh-Bénard?", solution: "Ini adalah sistem model untuk mempelajari transisi ke turbulensi dan pembentukan pola dalam sistem terdistribusi." } ]
+            },
+            {
+                id: 173, title: "Persamaan Kuramoto-Sivashinsky", latex: "\\frac{\\partial u}{\\partial t} + \\frac{\\partial^4 u}{\\partial x^4} + \\frac{\\partial^2 u}{\\partial x^2} + \\frac{1}{2} \\left( \\frac{\\partial u}{\\partial x} \\right)^2 = 0",
+                description: "Persamaan diferensial parsial nonlinier yang memodelkan instabilitas difusi-thermal.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa perilaku khusus Persamaan Kuramoto-Sivashinsky?", solution: "Persamaan ini menunjukkan chaos spatiotemporal dan digunakan untuk memodelkan berbagai fenomena instabilitas dalam fisika dan teknik." } ]
+            },
+            {
+                id: 174, title: "Persamaan Swift-Hohenberg", latex: "\\frac{\\partial u}{\\partial t} = ru - (1 + \\nabla^2)^2 u - u^3",
+                description: "Persamaan model untuk studi pembentukan pola dan transisi fase.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Swift-Hohenberg?", solution: "Persamaan ini digunakan untuk memodelkan konveksi Rayleigh-Bénard, pembuatan pola dalam sistem kimia, dan morfogenesis dalam biologi." } ]
+            },
+            {
+                id: 175, title: "Persamaan Cahn-Hilliard", latex: "\\frac{\\partial c}{\\partial t} = \\nabla^2 (c^3 - c - \\gamma \\nabla^2 c)",
+                description: "Mendeskripsikan pemisahan fase dalam campuran biner.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Cahn-Hilliard?", solution: "Persamaan ini adalah model fundamental untuk pemisahan fase dan digunakan dalam ilmu material untuk mempelajari spinodal decomposition." } ]
+            },
+            {
+                id: 176, title: "Persamaan Allen-Cahn", latex: "\\frac{\\partial u}{\\partial t} = -\\frac{\\delta F}{\\delta u} = \\epsilon^2 \\nabla^2 u - f(u)",
+                description: "Mendeskripsikan dinamika antarmuka dalam sistem yang mengalami transisi fase.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa perbedaan Persamaan Allen-Cahn dengan Cahn-Hilliard?", solution: "Allen-Cahn tidak mengonservasi order parameter, sedangkan Cahn-Hilliard mengonservasinya. Allen-Cahn mendeskripsikan dinamika antarmuka, sementara Cahn-Hilliard mendeskripsikan pemisahan fase." } ]
+            },
+            {
+                id: 177, title: "Persamaan Ginzburg-Landau Time-Dependent", latex: "\\frac{\\partial \\psi}{\\partial t} = -\\Gamma \\frac{\\delta F}{\\delta \\psi^*}",
+                description: "Versi bergantung waktu dari Persamaan Ginzburg-Landau untuk dinamika order parameter.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Ginzburg-Landau Time-Dependent?", solution: "Persamaan ini digunakan untuk mempelajari dinamika transisi fase, termasuk pembentukan vorteks dalam superkonduktor dan domain dalam magnet." } ]
+            },
+            {
+                id: 178, title: "Persamaan Reaction-Diffusion", latex: "\\frac{\\partial u}{\\partial t} = D \\nabla^2 u + f(u)",
+                description: "Kelas persamaan yang mendeskripsikan bagaimana konsentrasi satu atau lebih substansi berubah karena difusi dan reaksi kimia.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Reaction-Diffusion?", solution: "Persamaan ini digunakan dalam biologi untuk memodelkan morfogenesis, dalam kimia untuk reaksi difusi, dan dalam ekologi untuk dinamika populasi." } ]
+            },
+            {
+                id: 179, title: "Persamaan Fisher-KPP", latex: "\\frac{\\partial u}{\\partial t} = D \\frac{\\partial^2 u}{\\partial x^2} + r u (1 - u)",
+                description: "Persamaan reaction-diffusion yang memodelkan penyebaran populasi dalam ekologi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Fisher-KPP?", solution: "Persamaan ini memprediksi adanya kecepatan propagasi gelombang yang konstan dan digunakan dalam genetika populasi dan ekologi." } ]
+            },
+            {
+                id: 180, title: "Persamaan Belousov-Zhabotinsky", latex: "\\frac{\\partial u}{\\partial t} = D_u \\nabla^2 u + u - u^3 - v + \\kappa",
+                description: "Model untuk reaksi kimia berosilasi yang menunjukkan pola gelombang.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang khusus tentang reaksi Belousov-Zhabotinsky?", solution: "Ini adalah salah satu contoh pertama dari reaksi kimia non-equilibrium yang menunjukkan perilaku berosilasi dan pembentukan pola spasial." } ]
+            },
+            {
+                id: 181, title: "Persamaan Hodgkin-Huxley", latex: "C_m \\frac{dV}{dt} = -g_{Na} m^3 h (V - V_{Na}) - g_K n^4 (V - V_K) - g_L (V - V_L) + I_{ext}",
+                description: "Model matematika yang mendeskripsikan bagaimana potensial aksi di neuron initiated dan propagated.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Model Hodgkin-Huxley?", solution: "Model ini adalah landasan untuk neurofisiologi kuantitatif dan menghasilkan Hadiah Nobel bagi Hodgkin dan Huxley." } ]
+            },
+            {
+                id: 182, title: "Persamaan FitzHugh-Nagumo", latex: "\\frac{dv}{dt} = v - \\frac{v^3}{3} - w + I",
+                description: "Model sederhana untuk eksitabilitas neuronal yang menangkap esensi Model Hodgkin-Huxley.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa kelebihan Model FitzHugh-Nagumo dibanding Hodgkin-Huxley?", solution: "Model ini jauh lebih sederhana secara matematis tetapi masih mempertahankan properti eksitabilitas kunci, membuatnya lebih mudah untuk dianalisis." } ]
+            },
+            {
+                id: 183, title: "Persamaan Lotka-Volterra", latex: "\\frac{dx}{dt} = \\alpha x - \\beta x y",
+                description: "Model untuk dinamika populasi predator-prey dalam ekologi.", level: "SMA", topics: ["Lainnya"],
+                variables: [ { symbol: "alpha", name: "α (laju pertumbuhan prey)", defaultValue: 1 }, { symbol: "beta", name: "β (laju predasi)", defaultValue: 0.1 }, { symbol: "x", name: "Populasi prey", defaultValue: 20 }, { symbol: "y", name: "Populasi predator", defaultValue: 5 } ],
+                calculate: function(v) { return `Perubahan populasi prey = ${(v.alpha * v.x - v.beta * v.x * v.y).toFixed(2)}`; },
+                examples: [ { problem: "Jika α=1, β=0.1, x=20, y=5, bagaimana perubahan populasi prey?", solution: "dx/dt = 1×20 - 0.1×20×5 = 20 - 10 = 10 (populasi prey meningkat)" } ]
+            },
+            {
+                id: 184, title: "Persamaan SIR", latex: "\\frac{dS}{dt} = -\\beta S I",
+                description: "Model epidemiologi untuk penyebaran penyakit menular.", level: "SMA", topics: ["Lainnya"],
+                variables: [ { symbol: "beta", name: "β (laju transmisi)", defaultValue: 0.3 }, { symbol: "S", name: "Populasi rentan", defaultValue: 1000 }, { symbol: "I", name: "Populasi terinfeksi", defaultValue: 1 } ],
+                calculate: function(v) { return `Perubahan populasi rentan = ${(-v.beta * v.S * v.I).toFixed(2)}`; },
+                examples: [ { problem: "Dalam populasi 1000 rentan dan 1 terinfeksi, dengan β=0.3, berapa perubahan populasi rentan?", solution: "dS/dt = -0.3×1000×1 = -300 (populasi rentan berkurang)" } ]
+            },
+            {
+                id: 185, title: "Persamaan Logistic Map", latex: "x_{n+1} = r x_n (1 - x_n)",
+                description: "Peta nonlinear sederhana yang menunjukkan transisi ke chaos.", level: "Advanced", topics: ["Lainnya"],
+                variables: [ { symbol: "r", name: "Parameter r", defaultValue: 3.2 }, { symbol: "x", name: "Nilai x", defaultValue: 0.5 } ],
+                calculate: function(v) { return `Nilai berikutnya = ${(v.r * v.x * (1 - v.x)).toFixed(4)}`; },
+                examples: [ { problem: "Untuk r=3.2 dan x=0.5, hitung iterasi berikutnya.", solution: "x₁ = 3.2×0.5×(1-0.5) = 3.2×0.5×0.5 = 0.8" } ]
+            },
+            {
+                id: 186, title: "Persamaan Hénon Map", latex: "x_{n+1} = 1 - a x_n^2 + y_n",
+                description: "Peta dua-dimensi yang menunjukkan dinamika chaotic.", level: "Advanced", topics: ["Lainnya"],
+                variables: [ { symbol: "a", name: "Parameter a", defaultValue: 1.4 }, { symbol: "x", name: "Nilai x", defaultValue: 0.5 }, { symbol: "y", name: "Nilai y", defaultValue: 0.5 } ],
+                calculate: function(v) { return `x berikutnya = ${(1 - v.a * Math.pow(v.x, 2) + v.y).toFixed(4)}`; },
+                examples: [ { problem: "Untuk a=1.4, x=0.5, y=0.5, hitung iterasi x berikutnya.", solution: "x₁ = 1 - 1.4×(0.5)² + 0.5 = 1 - 1.4×0.25 + 0.5 = 1 - 0.35 + 0.5 = 1.15" } ]
+            },
+            {
+                id: 187, title: "Persamaan Lorenz", latex: "\\frac{dx}{dt} = \\sigma (y - x)",
+                description: "Sistem persamaan diferensial yang menunjukkan chaos deterministik.", level: "Advanced", topics: ["Lainnya"],
+                variables: [ { symbol: "sigma", name: "σ", defaultValue: 10 }, { symbol: "x", name: "x", defaultValue: 1 }, { symbol: "y", name: "y", defaultValue: 2 } ],
+                calculate: function(v) { return `dx/dt = ${(v.sigma * (v.y - v.x)).toFixed(2)}`; },
+                examples: [ { problem: "Untuk σ=10, x=1, y=2, hitung dx/dt.", solution: "dx/dt = 10×(2-1) = 10" } ]
+            },
+            {
+                id: 188, title: "Persamaan Rössler", latex: "\\frac{dx}{dt} = -y - z",
+                description: "Sistem persamaan diferensial chaotic yang lebih sederhana daripada sistem Lorenz.", level: "Advanced", topics: ["Lainnya"],
+                variables: [ { symbol: "y", name: "y", defaultValue: 1 }, { symbol: "z", name: "z", defaultValue: 1 } ],
+                calculate: function(v) { return `dx/dt = ${(-v.y - v.z).toFixed(2)}`; },
+                examples: [ { problem: "Untuk y=1, z=1, hitung dx/dt.", solution: "dx/dt = -1 - 1 = -2" } ]
+            },
+            {
+                id: 189, title: "Persamaan Duffing", latex: "\\frac{d^2 x}{dt^2} + \\delta \\frac{dx}{dt} + \\alpha x + \\beta x^3 = \\gamma \\cos(\\omega t)",
+                description: "Osilator nonlinier terpaksa yang menunjukkan chaos dan bifurcations.", level: "Advanced", topics: ["Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Duffing?", solution: "Persamaan ini digunakan untuk memodelkan sistem mekanis dengan nonlinieritas, seperti beam yang membengkok dan sistem osilasi lainnya." } ]
+            },
+            {
+                id: 190, title: "Persamaan Van der Pol", latex: "\\frac{d^2 x}{dt^2} - \\mu (1 - x^2) \\frac{dx}{dt} + x = 0",
+                description: "Osilator nonlinier dengan damping negatif yang menunjukkan limit cycle.", level: "Advanced", topics: ["Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Osilator Van der Pol?", solution: "Ini adalah salah satu model pertama yang menunjukkan limit cycle dan digunakan dalam elektronika untuk memodelkan osilator." } ]
+            },
+            {
+                id: 191, title: "Persamaan Mathieu", latex: "\\frac{d^2 x}{dt^2} + (\\delta + \\epsilon \\cos t) x = 0",
+                description: "Persamaan diferensial dengan koefisien periodik yang menunjukkan parametric resonance.", level: "Advanced", topics: ["Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Mathieu?", solution: "Persamaan ini digunakan dalam fisika untuk mempelajari stabilitas sistem dengan parameter yang bervariasi secara periodik, seperti dalam accelerators partikel dan sistem mekanis." } ]
+            },
+            {
+                id: 192, title: "Persamaan Hill", latex: "\\frac{d^2 x}{dt^2} + \\theta(t) x = 0",
+                description: "Generalisasi Persamaan Mathieu untuk fungsi periodik umum θ(t).", level: "Advanced", topics: ["Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Hill?", solution: "Persamaan ini adalah dasar untuk teori Floquet tentang sistem dengan koefisien periodik dan memiliki aplikasi dalam mekanika celestial dan fisika solid state." } ]
+            },
+            {
+                id: 193, title: "Persamaan Telegraf", latex: "\\frac{\\partial^2 u}{\\partial t^2} + 2\\alpha \\frac{\\partial u}{\\partial t} = c^2 \\frac{\\partial^2 u}{\\partial x^2}",
+                description: "Generalisasi persamaan gelombang yang mencakup efek dissipative.", level: "Advanced", topics: ["Lainnya"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Telegraf?", solution: "Persamaan ini digunakan dalam transmisi sinyal di kabel telegraf, serta dalam fisika untuk memodelkan gelombang dengan dissipasi." } ]
+            },
+            {
+                id: 194, title: "Persamaan Klein-Gordon", latex: "\\frac{1}{c^2} \\frac{\\partial^2 \\psi}{\\partial t^2} - \\nabla^2 \\psi + \\frac{m^2 c^2}{\\hbar^2} \\psi = 0",
+                description: "Persamaan gelombang relativistik untuk partikel spin-0.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa hubungan Persamaan Klein-Gordon dengan Persamaan Schrödinger?", solution: "Klein-Gordon adalah versi relativistik untuk partikel tanpa spin, sedangkan Schrödinger adalah versi non-relativistik." } ]
+            },
+            {
+                id: 195, title: "Persamaan Dirac", latex: "(i\\gamma^\\mu \\partial_\\mu - m) \\psi = 0",
+                description: "Persamaan gelombang relativistik untuk partikel spin-1/2 seperti elektron.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Dirac?", solution: "Persamaan ini memprediksi keberadaan antimateri dan spin elektron, dan merupakan landasan untuk elektrodinamika kuantum." } ]
+            },
+            {
+                id: 196, title: "Persamaan Proca", latex: "(\\partial_\\mu \\partial^\\mu + m^2) A_\\nu - \\partial_\\nu (\\partial_\\mu A^\\mu) = 0",
+                description: "Persamaan gelombang relativistik untuk partikel spin-1 bermassa.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Proca?", solution: "Persamaan ini digunakan untuk memodelkan boson vektor bermassa seperti boson W dan Z dalam Model Standar fisika partikel." } ]
+            },
+            {
+                id: 197, title: "Persamaan Rarita-Schwinger", latex: "(i\\gamma^\\mu \\partial_\\mu - m) \\psi_\\nu + \\text{terms tambahan} = 0",
+                description: "Persamaan gelombang relativistik untuk partikel spin-3/2.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Rarita-Schwinger?", solution: "Persamaan ini mendeskripsikan partikel spin-3/2 seperti baryon delta dalam fisika hadron, dan superpartners dalam teori supersimetri." } ]
+            },
+            {
+                id: 198, title: "Persamaan Weyl", latex: "\\sigma^\\mu \\partial_\\mu \\psi = 0",
+                description: "Persamaan gelombang relativistik untuk partikel tanpa massa spin-1/2.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Weyl?", solution: "Persamaan ini mendeskripsikan neutrino dalam pendekatan massa nol, dan Weyl fermions dalam material topologi." } ]
+            },
+            {
+                id: 199, title: "Persamaan Maxwell dalam Formulasi Diferensial", latex: "\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}",
+                description: "Salah satu dari empat persamaan Maxwell yang menjadi dasar elektrodinamika klasik.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Tuliskan keempat persamaan Maxwell dalam bentuk diferensial.", solution: "1. ∇·E = ρ/ε₀, 2. ∇·B = 0, 3. ∇×E = -∂B/∂t, 4. ∇×B = μ₀J + μ₀ε₀∂E/∂t" } ]
+            },
+            {
+                id: 200, title: "Persamaan Einstein", latex: "G_{\\mu\\nu} = \\frac{8\\pi G}{c^4} T_{\\mu\\nu}",
+                description: "Persamaan medan relativitas umum yang menghubungkan kelengkungan spacetime dengan distribusi materi dan energi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa makna Persamaan Einstein?", solution: "Persamaan ini menyatakan bahwa kelengkungan spacetime (diwakili oleh tensor Einstein G_μν) sebanding dengan kandungan materi-energi (diwakili oleh tensor stress-energy T_μν)." } ]
+            },
+            {
+                id: 201, title: "Persamaan Friedmann", latex: "\\left( \\frac{\\dot{a}}{a} \\right)^2 = \\frac{8\\pi G}{3} \\rho - \\frac{k}{a^2}",
+                description: "Persamaan yang mendeskripsikan ekspansi alam semesta dalam kosmologi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa yang diwakili oleh a dalam Persamaan Friedmann?", solution: "a adalah faktor skala yang mengukur bagaimana jarak antara objek kosmologis berubah seiring waktu akibat ekspansi alam semesta." } ]
+            },
+            {
+                id: 202, title: "Persamaan Wheeler-DeWitt", latex: "\\hat{H} \\Psi = 0",
+                description: "Persamaan kuantum untuk seluruh alam semesta dalam gravitasi kuantum.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa interpretasi Persamaan Wheeler-DeWitt?", solution: "Persamaan ini menunjukkan bahwa fungsi gelombang alam semesta tidak bergantung pada waktu, yang menimbulkan 'problem waktu' dalam gravitasi kuantum." } ]
+            },
+            {
+                id: 203, title: "Persamaan Schrödinger-Poisson", latex: "i\\hbar \\frac{\\partial \\psi}{\\partial t} = -\\frac{\\hbar^2}{2m} \\nabla^2 \\psi + m\\Phi\\psi",
+                description: "Sistem persamaan yang mendeskripsikan materi gelap fuzzy dalam kosmologi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Schrödinger-Poisson?", solution: "Persamaan ini digunakan dalam model materi gelap fuzzy dimana materi gelap dianggap sebagai bidang skalar ultra-ringan yang mematuhi mekanika kuantum." } ]
+            },
+            {
+                id: 204, title: "Persamaan Vlasov-Poisson", latex: "\\frac{\\partial f}{\\partial t} + \\mathbf{v} \\cdot \\nabla f - \\nabla \\Phi \\cdot \\nabla_v f = 0",
+                description: "Sistem persamaan yang mendeskripsikan dinamika sistem gravitasi seperti galaksi dan gugus galaksi.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Vlasov-Poisson?", solution: "Persamaan ini adalah dasar untuk mempelajari dinamika sistem bintang dan evolusi struktur berskala besar di alam semesta." } ]
+            },
+            {
+                id: 205, title: "Persamaan Jeans", latex: "\\frac{\\partial \\rho}{\\partial t} + \\nabla \\cdot (\\rho \\mathbf{v}) = 0",
+                description: "Persamaan kontinuitas untuk sistem gravitasi yang mendeskripsikan kekekalan massa.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Jeans?", solution: "Persamaan ini digunakan dalam astrofisika untuk mempelajari stabilitas awan gas terhadap keruntuhan gravitasi, yang mengarah pada pembentukan bintang." } ]
+            },
+            {
+                id: 206, title: "Persamaan Boltzmann Transport", latex: "\\frac{\\partial f}{\\partial t} + \\mathbf{v} \\cdot \\nabla f + \\frac{\\mathbf{F}}{m} \\cdot \\nabla_v f = \\left( \\frac{\\partial f}{\\partial t} \\right)_{\\text{coll}}",
+                description: "Persamaan yang mendeskripsikan evolusi fungsi distribusi partikel dalam sistem di luar kesetimbangan.", level: "Advanced", topics: ["Fisika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa signifikansi Persamaan Boltzmann Transport?", solution: "Persamaan ini adalah dasar untuk teori kinetik gas dan transport theory, dan menghubungkan deskripsi mikroskopis dengan properti makroskopis seperti viskositas dan konduktivitas termal." } ]
+            },
+            {
+                id: 207, title: "Persamaan Fokker-Planck", latex: "\\frac{\\partial P}{\\partial t} = -\\frac{\\partial}{\\partial x} [\\mu(x,t) P] + \\frac{\\partial^2}{\\partial x^2} [D(x,t) P]",
+                description: "Menjelaskan evolusi waktu dari fungsi kepadatan probabilitas untuk proses stokastik.", level: "Advanced", topics: ["Statistika"],
+                variables: [], calculate: null,
+                examples: [ { problem: "Apa aplikasi Persamaan Fokker-Planck?", solution: "Persamaan ini digunakan dalam fisika statistik, kimia, biologi, dan keuangan untuk memodelkan sistem yang mengalami fluktuasi acak." } ]
+            }
+        ];
+
+        // --- SCRIPT UTAMA (DENGAN PERBAIKAN) ---
+        let currentFilters = { level: "all", topic: "all" };
+        let currentFormula = null;
+        
+        const formulaGrid = document.getElementById('formulaGrid');
+        const formulaViewer = document.getElementById('formulaViewer');
+        const noResults = document.getElementById('noResults');
+        const searchInput = document.getElementById('searchInput');
+        const backButton = document.getElementById('backButton');
+        const calculateButton = document.getElementById('calculateButton');
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const totalFormulas = document.getElementById('totalFormulas');
+        const filterStatus = document.getElementById('filterStatus');
+
+        // Update total formulas count
+        totalFormulas.textContent = `Total Rumus: ${formulasDatabase.length}`;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderFormulas();
+            setupEventListeners();
+            setupSecurity();
+        });
+
+        function setupSecurity() {
+            // Mencegah inspect element dengan menonaktifkan keyboard shortcut
+            document.addEventListener('keydown', function(e) {
+                // Disable F12
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Disable Ctrl+Shift+I
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Disable Ctrl+Shift+J
+                if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Disable Ctrl+U
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Mencegah klik kanan
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        }
+
+        function setupEventListeners() {
+            searchInput.addEventListener('input', renderFormulas);
+            
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const filterGroup = this.parentElement;
+                    const filterType = filterGroup.classList.contains('level-filters') ? 'level' : 'topic';
+                    
+                    filterGroup.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentFilters[filterType] = this.dataset[filterType];
+                    renderFormulas();
+                    if(sidebar.classList.contains('active')) toggleSidebar();
+                });
+            });
+            
+            backButton.addEventListener('click', () => showFormulaViewer(false));
+            calculateButton.addEventListener('click', calculate);
+            hamburgerButton.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        }
+
+        function renderFormulas() {
+            showFormulaViewer(false);
+            const searchTerm = searchInput.value.toLowerCase();
+            formulaGrid.innerHTML = '';
+            
+            const sortedFormulas = [...formulasDatabase].sort((a, b) => a.title.localeCompare(b.title));
+
+            const filteredFormulas = sortedFormulas.filter(formula => {
+                const searchCorpus = `${formula.title} ${formula.description} ${formula.topics.join(' ')}`.toLowerCase();
+                const matchesSearch = searchTerm === '' || searchCorpus.includes(searchTerm);
+                const matchesLevel = currentFilters.level === 'all' || formula.level === currentFilters.level;
+                const matchesTopic = currentFilters.topic === 'all' || formula.topics.includes(currentFilters.topic);
+                
+                return matchesSearch && matchesLevel && matchesTopic;
+            });
+            
+            // Update filter status
+            const levelText = currentFilters.level === 'all' ? 'Semua Tingkat' : currentFilters.level;
+            const topicText = currentFilters.topic === 'all' ? 'Semua Topik' : currentFilters.topic;
+            filterStatus.textContent = `Menampilkan: ${levelText} | ${topicText} | ${filteredFormulas.length} rumus`;
+            
+            if (filteredFormulas.length === 0) {
+                noResults.style.display = 'block';
+                formulaGrid.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                formulaGrid.style.display = 'grid';
+                
+                filteredFormulas.forEach(formula => {
+                    const card = document.createElement('div');
+                    card.className = 'formula-card';
+                    card.innerHTML = `
+                        <h3 class="formula-title">${formula.title}</h3>
+                        <div class="formula-latex">\\(${formula.latex}\\)</div>
+                        <p class="formula-description">${formula.description.substring(0, 120)}...</p>
+                        <div class="formula-meta">
+                            <span class="formula-level">${formula.level}</span>
+                            <div class="topic-tags">${formula.topics.map(topic => `<span class="formula-topic">${topic}</span>`).join('')}</div>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => showFormulaDetails(formula));
+                    formulaGrid.appendChild(card);
+                });
+                
+                if (window.MathJax) {
+                    MathJax.typesetPromise();
+                }
+            }
+        }
+
+        function showFormulaDetails(formula) {
+            currentFormula = formula;
+            
+            document.getElementById('viewerTitle').textContent = formula.title;
+            document.getElementById('viewerLatex').innerHTML = `\\[${formula.latex}\\]`;
+            document.getElementById('viewerDescription').textContent = formula.description;
+            
+            const inputGroup = document.getElementById('inputGroup');
+            const calculatorWrapper = document.getElementById('calculatorWrapper');
+            inputGroup.innerHTML = '';
+            
+            if (formula.variables && formula.variables.length > 0) {
+                calculatorWrapper.style.display = 'block';
+                formula.variables.forEach(v => {
+                    const inputField = document.createElement('div');
+                    inputField.className = 'input-field';
+                    inputField.innerHTML = `
+                        <label for="var-${v.symbol}">${v.name}</label>
+                        <input type="number" id="var-${v.symbol}" value="${v.defaultValue || 0}" step="any">
+                    `;
+                    inputGroup.appendChild(inputField);
+                });
+            } else {
+                calculatorWrapper.style.display = 'none';
+            }
+            document.getElementById('result').style.display = 'none';
+            
+            const examplesContainer = document.getElementById('examples');
+            examplesContainer.innerHTML = '';
+            
+            if (formula.examples && formula.examples.length > 0) {
+                examplesContainer.innerHTML = '<h3>Contoh Soal & Pembahasan</h3>';
+                formula.examples.forEach(ex => {
+                    const exampleItem = document.createElement('div');
+                    exampleItem.className = 'example-item';
+                    exampleItem.innerHTML = `
+                        <p><strong>Soal:</strong> ${ex.problem}</p>
+                        <div><strong>Pembahasan:</strong> ${ex.solution}</div>
+                    `;
+                    examplesContainer.appendChild(exampleItem);
+                });
+            }
+            
+            showFormulaViewer(true);
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function showFormulaViewer(show) {
+            if (show) {
+                formulaGrid.style.display = 'none';
+                noResults.style.display = 'none';
+                formulaViewer.style.display = 'block';
+                window.scrollTo(0, 0);
+            } else {
+                formulaGrid.style.display = 'grid';
+                formulaViewer.style.display = 'none';
+                currentFormula = null;
+            }
+        }
+
+        function calculate() {
+            if (!currentFormula || !currentFormula.calculate) return;
+            
+            const variables = {};
+            let allInputsValid = true;
+            currentFormula.variables.forEach(v => {
+                const input = document.getElementById(`var-${v.symbol}`);
+                if (input.value === '' || isNaN(parseFloat(input.value))) {
+                    allInputsValid = false;
+                }
+                variables[v.symbol] = parseFloat(input.value);
+            });
+
+            const resultElement = document.getElementById('result');
+            if (!allInputsValid) {
+                resultElement.innerHTML = '<strong>Error:</strong> Harap isi semua nilai variabel dengan angka yang valid.';
+                resultElement.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const resultText = currentFormula.calculate(variables);
+                resultElement.innerHTML = `<strong>Hasil:</strong> ${resultText}`;
+                resultElement.style.display = 'block';
+            } catch (error) {
+                resultElement.innerHTML = '<strong>Error:</strong> ' + error.message;
+                resultElement.style.display = 'block';
+            }
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
